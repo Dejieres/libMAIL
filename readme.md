@@ -1,18 +1,19 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="LibreOffice 3.5  (Linux)">
-	<META NAME="AUTHOR" CONTENT="Denis ">
-	<META NAME="CREATED" CONTENT="20150211;14244300">
-	<META NAME="CHANGEDBY" CONTENT="Denis ">
-	<META NAME="CHANGED" CONTENT="20150211;14265300">
-</HEAD>
-<BODY LANG="fr-FR" DIR="LTR">
-<P STYLE="margin-top: 0.42cm; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>LibMAIL</FONT></FONT></P>
-<P>libMAIL is a small LGPL library for sending emails from MS-Access.</P>
-<P><BR><BR>
-</P>
-</BODY>
-</HTML>
+# libMAIL
+libMAIL is a small LGPL library for sending emails from MS-Access
+# Installation
+* Create a ne folder on your drive ;
+* Extract files from the archive (https://github.com/Dejieres/libMAIL/archive/master.zip) ;
+* Create a new database. Name it libMAIL.mdb (or .accdb) ;
+* Open the database ;
+* Create a new standard module and import the file Outils.bas. Save the module under the name 'Outils'. This module contains a function that **_DELETES ALL MODULES AND FORMS FROM THE DATABASE_** , excepting the one named 'Outils'. It imports then all the *.frm and *.bas files it finds in the current database directory ;
+* Ensure that DAO (Microsoft DAO Object Library) and MSOffice X.y Object Library (msoxx.dll) references are set ;
+* Open the debug window (Ctrl-G) ;
+* Just type `ChargeVB` followed by Enter. This will import all the objects and compile the project.
+
+You library is ready to be referenced by your projects.
+
+# Quick start
+## Create a mail
+    Call CreeMail (Recipients, Subject, Message, From, [Username], [CC], [BCC], [Attachments()], [EditMail])
+## Start the server
+    Call SMTPLance(SrvName, [HELOdomain], [LogData], [LogComm], [LogFile], [Quit], [PollInterval], [Timeout])
