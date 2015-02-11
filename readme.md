@@ -1,7 +1,7 @@
 # libMAIL
 libMAIL is a small LGPL library for sending emails from MS-Access
 # Installation
-* Create a ne folder on your drive ;
+* Create a new folder on your drive ;
 * Extract files from the archive (https://github.com/Dejieres/libMAIL/archive/master.zip) ;
 * Create a new database. Name it libMAIL.mdb (or .accdb) ;
 * Open the database ;
