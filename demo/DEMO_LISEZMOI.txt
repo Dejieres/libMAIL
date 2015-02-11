@@ -1,0 +1,22 @@
+* Créez un dossier sur votre disque dur ;
+
+* Copiez les fichiers .FRM et.MOD dans ce dossier ;
+
+* Créez une base de données vierge dans ce dossier ;
+
+* Ouvrez cette base ;
+
+* Créez un nouveau module et collez ou importez-y le contenu du fichier Outils.MOD.
+  Attention aux lignes Option Compare Database et Option Explicit qui sont insérées automatiquement en début de module.
+  Supprimez-les pour éviter une erreur de compilation.
+
+* Enregistrez le module sous le nom Outils.
+  Ce module contient une procédure qui efface tous les modules et formulaires de la base, sauf le module nommé Outils.
+  Il est donc important d'enregistrer ce premier module sous ce nom précis, afin d'éviter que la procédure ne se supprime
+  elle-même au cours de son exécution, provoquant l'arrêt brutal d'Access.
+  La procédure importe tous les fichiers *.FRM et *.MOD présents dans le répertoire contenant la base de données courante.
+
+* Ouvrez la fenêtre de débogage (ou fenêtre d'exécution) (Ctrl-G) ;
+  Dans cette fenêtre, tapez simplement la commande : ChargeVB
+  Cette commande va charger tous les fichiers sources.
+ 

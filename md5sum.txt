@@ -1,0 +1,25 @@
+bdc8d86d017cf669b53250c4d9385e14  Outils.MOD
+046a5dad0ad38db63c23048391acb104  prvDeclarations API Windows.MOD
+9c201bf9842c82a33f7b0ed634dfe11b  prvFn Crypto.MOD
+00925795ab096c343ebbc84636594e86  prvFn Dates.MOD
+7b4b5a1f2bf753bdb3444db392751fe6  prvFn Fichiers et Tables.MOD
+4faa4828816743bddd9e0125ab22ddcc  prvFn Icones et menus.MOD
+6e896a869b6a7906411396553f3b7591  prvFn Mail.MOD
+2a96942f5983d9e253013cf828cfda13  prvFn MIME.MOD
+ff24958ec4f9e41b31658ec1cfa93fbc  prvFn SMTP.MOD
+bd27a4e0238a7025b513b63fccd49371  prvGlobales.MOD
+3b6d385dc55ecd1fc961a38ab732b56e  pubFn Divers.MOD
+d780c536c9d73abd8c182fb91bd444e1  pubFn EncDec.MOD
+9b29f4232529e316b6ca42f7e7fb4b83  pubFn Mail.MOD
+30ff17e523e5404f70ae77e66eeb7a7b  pubFn MD5.MOD
+2d999b94ef990938cb27465d45b7e769  pubFn SMTP.MOD
+14518d1f00256b0f18646fe2b9906fda  pubGlobales.MOD
+c254c5103c30ab8f4a840b84aadf0b38  _pubObsolete.MOD
+7667407403a26e043e329da097b8a16f  frm_APropos.FRM
+15b24a610955786e9d271a5461e204bc  frm_EditeMail.FRM
+8b07871ea18aebc6b8e23911a7907e15  frm_EtatSRV.FRM
+136ad302962a2f35f590d8adb8198626  frm_GestionBoiteMail.FRM
+bd06451ed63dcb9c5bb89b9b87551727  frm_Journal.FRM
+4ca0dd1b80e882e278d0066a56e8c62c  frm_SMTP.FRM
+b1e24c389e5a46363c6f92273a6f1a99  sf_GestionBM_Dossiers.FRM
+e3cca5f8680c54c61aeb75e7e0dae31c  sf_GestionBM_Msg.FRM

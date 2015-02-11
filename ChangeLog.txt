@@ -1,0 +1,148 @@
+Version 1.41 - novembre 2013
+---------------------------
+++ Fonction SMTPTest : informations sur le serveur distant.
+++ Ajout des champs Répondre à (Reply-To) et Envoyeur (Sender) à la création d'un message.
+++ Adaptation 64 bits des appels API.
+
+-- Constantes obsolètes.
+
+** frm_EditeMail perdait les PJOA lorsque EditeMail=True dans (E)CreeMail(MIME).
+** frm_EditeMail : défaut d'actualisation de la liste des pièces jointes lors de la modification d'un message.
+	Concerne Access 2010 et peut-être d'autres version.
+** Erreur de calcul de l'heure d'envoi du mail lorsque le décalage UTC était négatif (Access 2000 et supérieur).
+** Réception de la réponse à EHLO en plusieurs parties (serveur mail.paris.delosmail.com).
+** frm_GestionBoiteMail : problème d'affichage des barres de surbrillance. Concerne Access 2010 et peut-être d'autres version.
+    (voir http://www.self-access.com/forums/read.php?20,83489)
+** EnvoieTout : les champs mémo sont stockés en Unicode à partir d'Access 2000. FieldSize renvoie une valeur erronée.
+    ( voir http://www.self-access.com/forums/read.php?20,83527)
+** Le résultat était lmlSrvResCnx lorsqu'il n'y avait qu'un seul message en attente et que cet envoi échouait (aucun destinataire valide, par ex.).
+   Renvoie maintenant lmlSrvResErr.
+** Objet du message tronqué lorsqu'il dépassait 76 caractères de long.
+	(voir http://www.self-access.com/forums/read.php?20,83715)
+** IDEnveloppe : élimination des caractères non US-ASCII et encodage XText.
+
+
+Version 1.40 - juillet 2011
+---------------------------
+++ Fonction de hachage MD5.
+++ Authentifications CRAM-MD5 et DIGEST-MD5.
+++ Envoi d'objets Access en tant que P.J.
+++ Nouvelles contantes pour les options étendues SMTP.
+++ SMTPChange : permet de modifier des paramètres du serveur.
+++ Options d'envoi différé et de durée de conservation d'un message.
+++ Possibilité de se connecter avec l'adresse IP.
+++ Choix automatique du Content-Type et du Content-Transfer-Encoding le plus compact pour les PJ et le corps de message.
+++ Nouveaux états : lmlSrvConnexion et lmlSrvExecCmd.
+++ Form. d'édition : bouton d'importation d'un fichier HTML.
+   ECreeMailMIME peut importer une partie HTML depuis un fichier.
+   Conversion HTML --> Texte brut automatique.
+++ Export d'un message vers un fichier .eml.
+
+--
+
+** Extension de la fonction Purge. Efface également les enregistrements 'D'.
+** Annulation possible pendant la phase de connexion.
+** Erreur d'évaluation dans frm_SMTP.fNOTIFY : NEVER pouvait apparaître en même temps que DELAY ou FAILURE.
+** Erreur lors du clic sur l'icône si l'application hôte est réduite (libMAIL au format MDE).
+** L'affichage du journal par le formulaire est limité à 32767 car. (SelStart est un Entier).
+** Différence entre OctetsTotal et OctetsEnvoyés à la fin de l'envoi.
+** Conversion correcte des couleurs de l'icône en mode 16 bits (65536 couleurs).
+** Enc_Base64 : réduction du temps d'encodage d'environ 50%.
+** Dec_Base64 : réduction du temps de décodage d'environ 30%.
+** UaUTF8 : réduction du temps d'encodage d'environ 40%.
+** Correction de l'encodage et du décodage Quoted-printable.
+** La modification d'un message ajoutait un CRLF parasite aux pièces jointes.
+** Etat lmlSrvAttente sur SMTPRelance.
+** Journal() appelle SMTPJnlRAZ si nécessaire.
+** Extension de la variable interne de la bibliothèque. Suppression des Property de frm_SMTP.
+** Amélioration de la vitesse d'envoi pour les mails avec PJ volumineuse.
+   (http://www.self-access.com/forums/read.php?20,80251)
+** SMTPChange : Contrôles + correction d'une double affectation à .LogData.
+** Enc_Base64 : bug sur encodage chaine vide.
+** Dec_Base64 : optimisation oSortie.
+
+Version 1.30 - Juin 2010
+------------------------
+++ Variable d'état du serveur et fonction d'interrogation.
+++ Icône dans la zone de notification Windows (system tray).
+++ Notifications pendant et à la fin de l'envoi.
+++ Menu contextuel à partir de l'icône.
+++ Commandes d'envoi immédiat, interrogation d'état et gestion du journal.
+++ Annulation de l'envoi (sauf pour le message en cours).
+++ Formulaire d'affichage de l'état du serveur, avec progression.
+++ Fonctions UaUTF8() et UTF8aU(), conversion Unicode <--> UTF8.
+++ Fonctions Enc_QP et Dec_QP : conversion d'une chaîne en Quoted printable.
+++ Fonction ModifieMail() permettant la modification interactive d'un message non envoyé.
+++ Formulaire de gestion de la table BoiteMail.
+++ Options MDN (avis de réception et de lecture) : Disposition-Notification-To, Return-Receipt-To
+++ Option de priorité de message.
+++ Possibilité de spécifier le port de connexion au serveur SMTP.
+++ Possibilité d'ajouter un corps au format HTML (fonction ECreeMailMIME()).
+++ Création automatique des références par ChargeVB (DAO, Office)
+
+-- Fonction Enc_UTF8.
+
+** frm_SMTP n'est plus visible.
+** Correction du calcul de la taille du message.
+** Amélioration de la vitesse d'envoi (EnvoiCMD : DoEvents 'conditionnel' avant select(), DoEvents rapide après send()).
+** SMTPRelance permet de changer le délai de scrutation.
+** Limitation de SIZE à 2 Gio (cas d'un serveur retournant 82057666368 pour SIZE => dépassement de capacité).
+** Exclusion des plages D800 à DFFF et FFFE à FFFF de l'encodage UTF-8.
+** L'espace n'est plus considéré comme un séparateur d'adresses (fonction Delims()).
+** Erreur de dimension pour UBound (ECreeMailMIME(), ErreursPJ())
+** (E)SMTPLance : HELOdomain est maintenant facultatif. Nom du PC pris par défaut.
+   !!! ATTENTION : Les paramètres HELOdomain et OptionsESMTP sont intervertis dans ESMTPLance !!!
+** frm_EditeMail est dimensionnable.
+   Contrôle des champs À, De, CC et CCi.
+
+
+Version 1.20 - Juillet 2009
+---------------------------
+++ Prise en charge de l'extension DSN (accusés de réception - RFC 1891).
+++ Fonction ECreeMail(), création de mail avec options étendues (DSN). Retourne un identifiant unique de message.
+   ECreeMail() remonte les erreurs sur les pièces jointes. La fonction ErreursPJ() permet de déterminer s'il y a eu des erreurs.
+++ Formulaire de création/modification de message, appelé à partir de (E)CreeMail, à l'aide de l'option EditeMail.
+++ Ajout d'un champ 'X-Mailer:' à l'en-tête.
+++ Fonction Enc_QP : encode une chaîne en Quoted-Printable.
+++ Fonction Enc_UTF8 : encode une chaîne Unicode en UTF-8.
+++ DTU supplémentaire pour les options de messages : tuESMTP_MSG
+++ Ajout de la propriété VersTbl à la table BoiteMail.
+++ Vérifie que le socket peut accepter des données avant send(). Certaines PJ pouvaient être tronquées.
+
+--
+
+** Enc_Base64 : Réduction du temps d'encodage d'environ 50% (conversion en tableau Byte de toute la chaîne d'entrée).
+** Dec_Base64 : Réduction du temps de décodage d'environ 30%.
+** Le module Outils est déclaré Private Module. Il n'y a pas de risque de l'appeler accidentellement depuis l'aplication principale.
+** Les fonctions et procédures privées de la bibliothèques ont été réparties dans des modules distincts.
+** Structure de la table BoiteMail : champs supplémentaires pour les extensions SMTP, identifiant de message (clé primaire).
+** VerifieBAL refuse de créer la table dans la bibliothèque.
+   Contrôle la version de la table et la met à jour si nécessaire.
+   Sait mettre à jour une table attachée.
+** L'objet, le corps de message et le nom de la P.J. sont transmis en quoted-printable (UTF-8), afin de préserver les caractères non ASCII (>127).
+
+
+Version 1.10 - Mars 2009
+------------------------
+++ Support partiel des extensions SMTP (RFC2821). Connexion par EHLO, avec repli éventuel sur HELO.
+   Les extensions SIZE, AUTH-LOGIN et AUTH-PLAIN sont prises en charge (RFC 2554).
+++ ESMTPLance() pour les connexions avec authentification.
+   SMTPLance() est toujours utilisable pour les connexions sans authentification.
+++ Constantes et type défini par l'utilisateur pour l'authentification (voir la doc.).
+
+--
+
+** Le code de la fonction EnvoieTout() a été remanié.
+** EnvoiCMD() ne renvoie que le premier caractère du code de retour (RFC 2821).
+** Une estimation de la taille du mail est ajoutée à la commande MAIL si l'extension SIZE est prise en charge.
+
+
+Version 1.01 - Février 2009
+---------------------------
+++ Fonction Dec_Base64() : décodage d'une chaîne codée en Base 64.
+++ Fonction myCurrentUser() : retourne le login Windows.
+--
+** CreeMail() : le paramètre [sUtilisateur] est maintenant facultatif. Le login Windows est utilisé par défaut.
+** SMTPRelance, SMTPSuspend et SMTPDecharge vérifient que le formulaire est chargé.
+** SMTPLance : contrôle de la validité de la spec de fichier pour le journal.
+** ChargeVB() positionne le nom de projet à  'libMail'. Ceci garantit une référence constante, même si le nom du fichier de BDD (utilisé par défaut pour la propriété) est différent de 'libMail'.

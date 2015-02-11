@@ -1,0 +1,48 @@
+﻿                        ======================
+                        :: Démarrage rapide ::
+                        ======================
+
+
+Le serveur est essentiellement constitué d'une table (BoiteMail) servant de Boîte d'envoi, et d'un formulaire qui implémente le protocole de communication. Ce formulaire va scruter à intervalles réguliers la table BoîteMail.
+
+
+1. Installation
+---------------
+* Créez un dossier sur votre disque dur ;
+* Extrayez le contenu du dossier 'code' de l'archive dans ce nouveau dossier ;
+* Créez une base de données vierge dans ce dossier. Renommez-la en libMAIL.MDB ;
+* Ouvrez cette base ;
+* Créez un nouveau module et collez ou importez-y le contenu du fichier Outils.MOD. Enregistrez ce module sous le nom Outils. Ce module contient une fonction qui  _EFFACE TOUS LES MODULES ET FORMULAIRES DE LA BASE_, sauf le module nommé Outils. Elle importe ensuite tous les fichiers *.FRM et *.MOD présents dans le répertoire contenant la base de données courante ;
+* Assurez-vous que les références DAO (Microsoft DAO Object Library) et MSOffice X.y Object Library (msoxx.dll) sont sélectionnées ;
+* Ouvrez la fenêtre de débogage (Ctrl-G) ;
+* Dans cette fenêtre, tapez simplement la commande : ChargeVB. Cette commande importe les autres fichiers et compile tout le projet.
+
+La bibliothèque est prête. Vous pouvez la lier à votre application afin d'envoyer vos premiers messages.
+
+Toute la procédure en vidéo : http://grenier.self-access.com/public/screencast.php?mv=http://grenier.self-access.com/public/videos/ac_libmail.swf
+
+
+2. Créer un mail
+----------------
+    Call CreeMail (Destinataires, ObjetMsg, TexteMessage, Expediteur, [Utilisateur], [CC], [BCC], [PiecesJointes()], [EditeMail])
+
+Remarque : Lors du premier appel, vous devrez confirmer la création de la table BoiteMail. Cette table ne peut pas être créée dans la base bibliothèque.
+
+Le message est maintenant dans la table, prêt à être envoyé.
+
+Remarques :
+    - Le tableau des pièces jointes, s'il est utilisé, doit être initialisé avant d'appeler la procédure.
+    - EditeMail = True permet de modifier le message avant l'envoi.
+
+La commande ECreeMail accepte un paramètre supplémentaire permettant de passer des options étendues.
+
+
+3. Démarrer le serveur
+----------------------
+    Call SMTPLance(NomSrv, [HELOdomain], [LogData], [LogComm], [FichJnl], [EnvoiQuitte], [DelaiVerif], [DelaiReponse])
+
+La commande ESMTPLance accepte un paramètre supplémentaire permettant de passer des options étendues
+
+
+
+Pour une description détaillée de ces commandes, consultez le manuel d'utilisation qui se trouve dans le sous-dossier 'doc' de l'archive.
