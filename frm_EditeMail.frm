@@ -51,10 +51,6 @@ Begin Form
         0x0000000000000000000000000000000000000000000000000100010001000100 ,
         0x0000000000000000000000000100010001000100000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
-        0x0000000000000000000000000000000000000000000000000000000041007200 ,
-        0x690061006c000000000000000000000000000000000000000000000000000000 ,
-        0x00000000000000000000000000000000000000000000000000000000e0e0e000 ,
-        0x480000001c020000000000004283658701ccdaba000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
@@ -172,11 +168,6 @@ Begin Form
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
-        0x000000000000000000ccdaba68007000200062007500730069006e0065007300 ,
-        0x7300200069006e006b006a006500740020003100310030003000200073006500 ,
-        0x7200690065007300000031003000300020007300650072006900650073002c00 ,
-        0x4c006f00630061006c004f006e006c0079002c0044007200760043006f006e00 ,
-        0x7600650072007400000000000000000000000000000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
         0x0000000000000000000000000000000000000000000000000000000000000000 ,
@@ -1919,10 +1910,10 @@ Private Sub DtuAChamps(dtuMail As tuMAIL)
         Me.txtMsgHTML = .Message.HTML
         ' Options de Notification
         With dtuMail.OptionsMSG.DSN
-            Me.chkNOT_1 = (.Notification And lmlESMTPDsnNotifSucces)
-            Me.chkNOT_2 = (.Notification And lmlESMTPDsnNotifEchec)
-            Me.chkNOT_4 = (.Notification And lmlESMTPDsnNotifDelai)
-            Me.chkNOT_128 = (.Notification And lmlESMTPDsnNotifJamais)
+            Me.chkNOT_1 = CBool(.Notification And lmlESMTPDsnNotifSucces)
+            Me.chkNOT_2 = CBool(.Notification And lmlESMTPDsnNotifEchec)
+            Me.chkNOT_4 = CBool(.Notification And lmlESMTPDsnNotifDelai)
+            Me.chkNOT_128 = CBool(.Notification And lmlESMTPDsnNotifJamais)
         End With
         Call MarqueChk
 
@@ -1971,20 +1962,20 @@ Private Sub MarqueChk()
 End Sub
 
 ' Change la couleur et la graisse de l'étiquette.
-Private Sub MarqueCtl(ctl As Control, bMarque As Boolean)
-    ctl.FontBold = bMarque
-    ctl.ForeColor = IIf(bMarque, 128, 0)
+Private Sub MarqueCtl(Ctl As Control, bMarque As Boolean)
+    Ctl.FontBold = bMarque
+    Ctl.ForeColor = IIf(bMarque, 128, 0)
 End Sub
 
 ' Met en gras l'option choisie dans un groupe d'options.
 Private Sub MarqueOption(cdr As OptionGroup)
-    Dim ctl As Control
+    Dim Ctl As Control
 
-    For Each ctl In cdr.Controls
-        If TypeOf ctl Is Label And TypeOf ctl.Parent Is OptionButton Then
-            Call MarqueCtl(ctl, ctl.Parent.OptionValue = cdr.Value)
+    For Each Ctl In cdr.Controls
+        If TypeOf Ctl Is Label And TypeOf Ctl.Parent Is OptionButton Then
+            Call MarqueCtl(Ctl, Ctl.Parent.OptionValue = cdr.Value)
         End If
-    Next ctl
+    Next Ctl
 End Sub
 
 ' Clic dans les cases à cocher de notification.
@@ -2116,9 +2107,11 @@ End Function
 Private Function ListePJ_Taille() As Long
     Dim i As Long
 
+    On Error Resume Next
     For i = 0 To UBound(dtuListePJ)
         ListePJ_Taille = ListePJ_Taille + dtuListePJ(i).Taille
     Next i
+    On Error GoTo 0
 End Function
 
 ' Contrôle la présence des infos nécessaire au démarrage immédiat du serveur
@@ -2293,7 +2286,7 @@ End Sub
 
 Private Sub cmdAjouter_Click()
     Dim dtuOFN As OPENFILENAME, sFiltre As String, vFichiers As Variant
-    Dim i As Integer, l As Long, sSpecF As String
+    Dim i As Integer, l As Long, sSpecF As String, s As String
 
     sFiltre = Traduit("cmdaj_filtre01", "Fichiers images") & vbNullChar & "*.jpg;*.jpeg;*.tig;*.bmp;*.gif" & vbNullChar & _
               Traduit("cmdaj_filtre02", "Documents Office") & vbNullChar & "*.do*;*.xl*;*.pp*;*.md*" & vbNullChar & _
@@ -2323,17 +2316,21 @@ Private Sub cmdAjouter_Click()
     ' Sélection de plusieurs fichiers dans le même dossier : C:\Temp<00>PJ1.txt<00>PJ2.txt
     ' Sélection contenant un raccourci (en dernière position) :
     '       C:\Temp<00>PJ2.txt<00>PJ1.txt<00>C:\Dossier\SMTP_SRV.LOG
-    vFichiers = Scinder(Trim$(dtuOFN.sFile), vbNullChar)
+    s = Remplacer(Trim$(dtuOFN.sFile), vbNullChar & vbNullChar, "")
+    vFichiers = Scinder(s, vbNullChar)
 
-    If UBound(vFichiers) = 1 Then                           ' Un seul fichier sélectionné.
+    If UBound(vFichiers) = 0 Then                           ' Un seul fichier sélectionné.
         Call AjouteCible((vFichiers(0)))                    ' Ajouter le fichier.
 
     Else                                                    ' Sélection multiple.
-        For i = 1 To UBound(vFichiers) - 1                  ' La ligne 0 contient le chemin.
-            If InStr(vFichiers(i), "\") = 0 Then            ' Si c'est un chemin + fichier.
-                Call AjouteCible(vFichiers(0) & "\" & vFichiers(i))
-            Else                                            ' Raccourci dans une sélection multiple.
-                Call AjouteCible((vFichiers(i)))
+        If Not vFichiers(0) Like "*\" Then vFichiers(0) = vFichiers(0) & "\"
+        For i = 1 To UBound(vFichiers)                      ' La ligne 0 contient le chemin.
+            If Len(vFichiers(i)) > 0 Then
+                If InStr(vFichiers(i), "\") = 0 Then            ' Si c'est un chemin + fichier.
+                    Call AjouteCible(vFichiers(0) & vFichiers(i))
+                Else                                            ' Raccourci dans une sélection multiple.
+                    Call AjouteCible((vFichiers(i)))
+                End If
             End If
         Next i
 
