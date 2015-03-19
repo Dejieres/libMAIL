@@ -151,6 +151,13 @@ Function MSGEnTete(rs As DAO.Recordset, ESMTP_MSG As tuESMTP_MSG, _
 
     ' Priorité du message.
     If ESMTP_MSG.Priorite <> 0 Then MSGEnTete = MSGEnTete & "X-Priority: " & ESMTP_MSG.Priorite & vbCrLf
+
+    ' Identifiant (Message-Id).
+    s = "<libMAIL_" & HoroDatage(True) & "@" & myComputerName & ">"
+    MSGEnTete = MSGEnTete & "Message-Id: " & s & vbCrLf
+
+    ' User-agent.
+    MSGEnTete = MSGEnTete & "User-Agent: libMAILVBA/" & VersionProg() & vbCrLf
 End Function
 
 ' Uniformise les délimiteurs, et supprime les délimiteurs consécutifs

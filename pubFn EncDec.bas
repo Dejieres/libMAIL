@@ -407,7 +407,7 @@ Function myHEX(Param As String) As String
     myHEX = Space$(2 * (UBound(b) + 1))
     For i = 0 To UBound(b)
         s = Hex$(b(i))
-        If Len(s) < 2 Then s = "0" & s                      ' S'assurer qu'on a bien deux caractères.
+        If Len(s) < 2 Then s = "0" & s                          ' S'assurer qu'on a bien deux caractères.
         Mid$(myHEX, 2 * i + 1, 2) = LCase$(s)
     Next i
 
