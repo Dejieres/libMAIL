@@ -22,7 +22,11 @@ Option Private Module
 
 Private Const csNomProp As String = "DateDernModif"
 
-
+#If Vba7 Then
+    Declare PtrSafe Function GetUserDefaultLangID Lib "kernel32" () As Integer
+#Else
+    Declare Function GetUserDefaultLangID Lib "kernel32" () As Integer
+#End If
 
 Sub ChargeVB()
     ' Etablit avant tout les références nécessaires au fonctionnement correct de la bibliothèque
