@@ -338,7 +338,7 @@ End Type
     Declare PtrSafe Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (xDest As Any, xSource As Any, ByVal nbytes As LongPtr)
     Declare PtrSafe Function GetComputerNameEx Lib "kernel32" Alias "GetComputerNameExA" (ByVal NameType As Long, ByVal lpBuffer As String, nSize As Long) As Long
     Declare PtrSafe Function GetLastError Lib "kernel32" () As Long
-    Declare PtrSafe Function GetSystemDefaultLangID Lib "kernel32" () As Integer
+    Declare PtrSafe Function GetUserDefaultLangID Lib "kernel32" () As Integer
     Declare PtrSafe Sub GetSystemTime Lib "kernel32" (lpSystemTime As SYSTEMTIME)
     Declare PtrSafe Function GetTimeZoneInformation Lib "kernel32" (lpTimeZoneInformation As TIME_ZONE_INFORMATION) As Long
     Declare PtrSafe Function GetVersionEx Lib "kernel32" Alias "GetVersionExA" (lpVersionInformation As OSVERSIONINFO) As Long
@@ -388,7 +388,7 @@ End Type
     Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (xDest As Any, xSource As Any, ByVal nbytes As Long)
     Declare Function GetComputerNameEx Lib "kernel32" Alias "GetComputerNameExA" (ByVal NameType As Long, ByVal lpBuffer As String, nSize As Long) As Long
     Declare Function GetLastError Lib "kernel32" () As Long
-    Declare Function GetSystemDefaultLangID Lib "kernel32" () As Integer
+    Declare Function GetUserDefaultLangID Lib "kernel32" () As Integer
     Declare Sub GetSystemTime Lib "kernel32" (lpSystemTime As SYSTEMTIME)
     Declare Function GetTimeZoneInformation Lib "kernel32" (lpTimeZoneInformation As TIME_ZONE_INFORMATION) As Long
     Declare Function GetVersionEx Lib "kernel32" Alias "GetVersionExA" (lpVersionInformation As OSVERSIONINFO) As Long

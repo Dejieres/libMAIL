@@ -3,7 +3,7 @@ Option Explicit
 Option Private Module
 
 
-' Copyright 2009-2013 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -112,12 +112,12 @@ Sub AffIconeNotif(frmHwnd As Long, b() As Byte)
                 ' Message au survol de la souris (128 car. maxi)
                 .szTip = "libMAIL v." & VersionProg() & " (" & Application.GetOption("Project Name") & ")" & vbCrLf & _
                          "Serv.: " & dtuEtatSyst.Serveur.NomSrv & ":" & dtuEtatSyst.Serveur.PortSrv & vbCrLf & _
-                         "Auth.: " & Nz(NomMethodeAuth(dtuEtatSyst.Serveur.OptionsESMTP.AUTH.Methode), "Inconnue") & vbCrLf & _
-                         Choose(dtuEtatSyst.EtatSrv.Etat + 1, "Déchargé.", _
-                                                              "Suspendu.", _
-                                                              "Attente." & vbCrLf & "Prochaine scrut. : " & dtuEtatSyst.EtatSrv.ScrutSvte, _
-                                                              "En cours.", _
-                                                              "Annulation de l'envoi. Le message en cours se termine.") & _
+                         "Auth.: " & Nz(NomMethodeAuth(dtuEtatSyst.Serveur.OptionsESMTP.AUTH.Methode), Traduit("icn_unknown", "Inconnue")) & vbCrLf & _
+                         Choose(dtuEtatSyst.EtatSrv.Etat + 1, Traduit("icn_unload", "Déchargé."), _
+                                                              Traduit("icn_paused", "Suspendu."), _
+                                                              Traduit("icn_wait", "Attente.") & vbCrLf & Traduit("icn_nextscan", "Prochaine scrut. : ") & dtuEtatSyst.EtatSrv.ScrutSvte, _
+                                                              Traduit("icn_sending", "En cours."), _
+                                                              Traduit("icn_cancel", "Annulation de l'envoi. Le message en cours se termine.")) & _
                          vbNullChar
             End With
             Call Shell_NotifyIcon(NIM_MODIFY, dtuEtatSyst.Tray.nid) ' Modifier l'icône.
@@ -141,7 +141,8 @@ End Function
 
 ' Création du menu
 Sub CreeMenu()
-    Dim cb As CommandBar, cbc As CommandBarControl, s As String
+    Dim cb As CommandBar, cbc As CommandBarControl, cbc1 As CommandBarPopup, s As String
+    Dim rs As DAO.Recordset
 
     ' Vérifier si la barre de commande existe déjà.
     ' (déchargement puis rechargement de frm_SMTP sans quitter l'application, par exemple)
@@ -159,7 +160,7 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "&Suspendre"
+'        .Caption = Traduit("mnu_pause", "&Suspendre")
         .OnAction = "SMTPSuspend"
         .Style = msoButtonIconAndCaption
         .FaceId = 189
@@ -169,7 +170,7 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "&Relancer"
+'        .Caption = Traduit("mnu_resume", "&Relancer")
         .OnAction = "SMTPRelance"
         .Style = msoButtonIconAndCaption
         .FaceId = 126
@@ -179,7 +180,7 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "&Envoyer maintenant"
+'        .Caption = Traduit("mnu_sendnow", "&Envoyer maintenant")
         .OnAction = "SMTPEnvoieMaintenant"
         .Style = msoButtonIconAndCaption
         .FaceId = 325
@@ -189,7 +190,7 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "&Décharger"
+'        .Caption = Traduit("mnu_unload", "&Décharger")
         .OnAction = "SMTPDecharge"
         .Style = msoButtonIconAndCaption
         .FaceId = 2186
@@ -199,7 +200,7 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "Ann&uler l'envoi"
+'        .Caption = Traduit("mnu_cancel", "Ann&uler l'envoi")
         .OnAction = "SMTPAnnule"
         .BeginGroup = True
         .Style = msoButtonIconAndCaption
@@ -210,7 +211,7 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "&Nouveau message..."
+'        .Caption = Traduit("mnu_newmsg", "&Nouveau message...")
         .OnAction = "mnuCreeMail"
         .BeginGroup = True
         .Style = msoButtonIconAndCaption
@@ -221,7 +222,7 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "&Gestionnaire..."
+'        .Caption = Traduit("mnu_mbm", "&Gestionnaire...")
         .OnAction = "mnuGestMail"
         .BeginGroup = True
         .Style = msoButtonIconAndCaption
@@ -232,7 +233,7 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "&Afficher l'état"
+'        .Caption = Traduit("mnu_status", "&Afficher l'état")
         .OnAction = "mnuAffEtat"
         .Style = msoButtonIconAndCaption
         .FaceId = 352
@@ -242,22 +243,57 @@ Sub CreeMenu()
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "Afficher le &journal..."
+'        .Caption = Traduit("mnu_log", "Afficher le &journal...")
         .OnAction = "SMTPFormJnl"
         .Style = msoButtonIconAndCaption
         .FaceId = 195
         .Tag = lmlMnuAJnl
     End With
 
+    ' Menu Langues et sous-menus.
+    Set cbc1 = cb.Controls.Add(msoControlPopup)
+    With cbc1
+'        .Caption = "&Langue"
+        .BeginGroup = True
+        .Tag = -2
+
+        ' Ajouter les autres langues.
+        Set rs = CodeDb.OpenRecordset("SELECT DISTINCT IDLang FROM T9N", dbOpenDynaset, 0, dbReadOnly)
+        Do While Not rs.EOF
+            Set cbc = cbc1.Controls.Add(msoControlButton)
+            With cbc
+                .Caption = LangueSyst(rs!IDLang) & " - " & rs!IDLang
+                .OnAction = "=ChangeLang(" & rs!IDLang & ")"
+                .Tag = rs!IDLang
+            End With
+        
+            rs.MoveNext
+        Loop
+        rs.Close
+        Set rs = Nothing
+
+        Set cbc = cbc1.Controls.Add(msoControlButton)
+        With cbc
+            .BeginGroup = True
+            .Caption = "Français (France) - 1036"                       ' C'est la langue par défaut.
+            .OnAction = "=ChangeLang(1036)"
+            .Tag = 1036
+        End With
+
+    End With
+
     Set cbc = cb.Controls.Add(msoControlButton)
     With cbc
         .FaceId = 0
-        .Caption = "A &propos..."
+'        .Caption = Traduit("mnu_about", "A &propos...")
         .OnAction = "mnuAPropos"
         .BeginGroup = True
         .Style = msoButtonIconAndCaption
         .FaceId = 49
+        .Tag = -1
     End With
+
+    Call LangueMenu                                                     ' Traduction du menu.
 
     Set cb = Nothing
     Set cbc = Nothing

@@ -2,7 +2,7 @@ Option Compare Database
 Option Explicit
 Option Private Module
 
-' Copyright 2009-2013 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -61,13 +61,13 @@ Function CnxServ(sNomSrv As String, lPort As Long, lSock As Long) As Long
     ' Initialisation de WinSock (version 1.1)
     lSock = -1                                                      ' Impossible d'initialiser Winsock
     CnxServ = WSAStartup(&H101, WSAdata)                            ' Remonter le code d'erreur.
-    Call Journal("Initialisation de Winsock... LastError=[" & WSAGetLastError() & "]")
+    Call Journal(Traduit("¤cnx_wsockinit", "Initialisation de Winsock...  LastError=[%s]", WSAGetLastError()))
     If CnxServ <> 0 Then Exit Function                              ' Erreur...
 
 
     ' Création d'un Socket
     lSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)
-    Call Journal("Création du socket... (" & lSock & "), LastError=[" & WSAGetLastError() & "]")
+    Call Journal(Traduit("¤cnx_wsockcreate", "Création du socket... (%s). LastError=[%s]", lSock, WSAGetLastError()))
     If lSock = INVALID_SOCKET Then
         CnxServ = lSock                                             ' Remonter le code d'erreur.
         lSock = 0                                                   ' Impossible de créer le socket.
@@ -83,7 +83,7 @@ Function CnxServ(sNomSrv As String, lPort As Long, lSock As Long) As Long
         sIP = AdresseSrv(sNomSrv)                                   ' Conversion nom --> adresse IP.
         If Len(sIP) = 0 Then                                        ' Résolution impossible...
             CnxServ = SOCKET_ERROR                                  ' Erreur de connexion...
-            Call Journal("Résolution de nom impossible pour [" & sNomSrv & "].")
+            Call Journal(Traduit("¤Résolution de nom impossible pour [%s].", sNomSrv))
             Exit Function
         End If
         lRet = inet_addr(sIP)
@@ -96,9 +96,9 @@ Function CnxServ(sNomSrv As String, lPort As Long, lSock As Long) As Long
         .sin_zero(0) = 0
     End With
     lRet = connect(lSock, SrvSmtp, Len(SrvSmtp))
-    Call Journal("Connexion au serveur " & sNomSrv & " [" & sIP & "], sur le port " & lPort & "... LastError=[" & WSAGetLastError() & "]")
+    Call Journal(Traduit("¤cnx_connect", "Connexion au serveur %s [%s], sur le port %s... LastError=[%s]", sNomSrv, sIP, lPort, WSAGetLastError()))
     If lRet = SOCKET_ERROR Then
-        Call Journal("*** Connexion impossible...")
+        Call Journal(Traduit("¤cnx_error", "*** Connexion impossible..."))
         CnxServ = lRet                                              ' Remonter le code d'erreur.
         Exit Function
     End If
@@ -107,7 +107,7 @@ Function CnxServ(sNomSrv As String, lPort As Long, lSock As Long) As Long
     ' Mise en place de la détection de données
     ' Va mettre le socket en mode non bloquant.
     lRet = ioctlsocket(lSock, FIOBION, &H1&)
-    Call Journal("WinSock : Mode non-bloquant. LastError=[" & WSAGetLastError() & "]")
+    Call Journal(Traduit("¤cnx_socket", "WinSock : Mode non-bloquant. LastError=[%s]", WSAGetLastError()))
     If lRet = SOCKET_ERROR Then
         CnxServ = lRet
         Exit Function
@@ -125,13 +125,13 @@ Sub CnxFin(lSock As Long)
     If lSock > 0 Then
         ' Fermeture du Socket
         lRet = closesocket(lSock)
-        Call Journal("Fermeture du socket... (" & lSock & "), LastError=[" & WSAGetLastError() & "]")
+        Call Journal(Traduit("¤cnx_close", "Fermeture du socket... (%s). LastError=[%s]", lSock, WSAGetLastError()))
     End If
 
     If lSock > -1 Then
         ' Nettoyage final
         lRet = WSACleanup()
-        Call Journal("Libération des ressources. LastError=[" & WSAGetLastError() & "]")
+        Call Journal(Traduit("¤cnx_cleanup", "Libération des ressources. LastError=[%s]", WSAGetLastError()))
     End If
 End Sub
 
@@ -214,18 +214,18 @@ Function EnvoiCMD(lSock As Long, ByVal sCmd As Variant, _
         If bLogAUTH Then                                            ' Journaliser la commande
             Call Journal("--> " & sCmd & ", LastError=[" & i & "]")
         Else
-            Call Journal("--> <*Données d'authentification*>" & ", LastError=[" & i & "]")
+            Call Journal(Traduit("¤cmd_authdata", "--> <*Données d'authentification*>, LastError=[%s]", i))
         End If
 
         If lRet = SOCKET_ERROR Then                                 ' Erreur de socket. On sort.
             EnvoiCMD = lRet
-            Call Journal("*** Erreur de socket sur send().")
+            Call Journal(Traduit("¤cmd_senderror", "*** Erreur de socket sur send()."))
             Exit Function
         End If
 
         If lRet = 0 Then                                            ' Dépassement de délai
             EnvoiCMD = REP_DELAI
-            Call Journal("*** Dépassement de délai sur WSSelect().")
+            Call Journal(Traduit("¤cmd_sendtimeout", "*** Dépassement de délai sur WSSelect()."))
             Exit Function
         End If
 
@@ -269,11 +269,11 @@ Function EnvoiCMD(lSock As Long, ByVal sCmd As Variant, _
 
     Select Case lRet
         Case SOCKET_ERROR                                           ' Erreur de socket. On sort.
-            Call Journal("*** Erreur de socket en réception, LastError=[" & i & "]")
+            Call Journal(Traduit("¤cmd_rcverror", "*** Erreur de socket en réception, LastError=[%s]", i))
             EnvoiCMD = SOCKET_ERROR
 
         Case 0                                                      ' Fermeture de connexion par le serveur distant
-            Call Journal("*** Fermeture de connexion par le serveur distant, LastError=[" & i & "]")
+            Call Journal(Traduit("¤cmd_cnxclose", "*** Fermeture de connexion par le serveur distant, LastError=[%s]", i))
             EnvoiCMD = SOCKET_ERROR
 
         Case Is > 0                                                 ' Données reçues normalement
@@ -285,7 +285,7 @@ Function EnvoiCMD(lSock As Long, ByVal sCmd As Variant, _
             EnvoiCMD = Val(Left$(s, 1))                             ' Ne garder que le premier chiffre de la réponse
 
         Case Else                                                   ' Sortie sur dépassement de délai
-            Call Journal("*** Dépassement de délai de réception.")
+            Call Journal(Traduit("¤cmd_rcvtimeout", "*** Dépassement de délai de réception."))
             EnvoiCMD = REP_DELAI
     End Select ' ======================================================================================
 End Function
@@ -368,7 +368,7 @@ End Sub
 ' Nom de la méthode d'authentification
 Function NomMethodeAuth(lMethode As Integer) As Variant
     Select Case lMethode
-        Case lmlESMTPAuthAucune:    NomMethodeAuth = "Aucune"
+        Case lmlESMTPAuthAucune:    NomMethodeAuth = Traduit("auth_none", "Aucune")
         Case lmlESMTPAuthLogin:     NomMethodeAuth = "LOGIN"
         Case lmlESMTPAuthPlain:     NomMethodeAuth = "PLAIN"
         Case lmlESMTPAuthCRAMMD5:   NomMethodeAuth = "CRAM-MD5"

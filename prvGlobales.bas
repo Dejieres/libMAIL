@@ -2,7 +2,7 @@ Option Compare Database
 Option Explicit
 Option Private Module
 
-' Copyright 2009-2013 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -25,8 +25,8 @@ Option Private Module
 
 ' Ces constantes ne sont accessibles qu'à l'aide des fonctions définies plus bas.
 ' -------------------------------------------------------------------------------
-Private Const VersionProgramme  As String = "1.41"
-Private Const cCopyRight        As String = "Copyright 2009-2013 - Denis SCHEIDT"
+Private Const VersionProgramme  As String = "1.49"
+Private Const cCopyRight        As String = "Copyright 2009-2014 - Denis SCHEIDT"
 
 ' Si le nom de la table contient des espaces, pensez à le mettre [entre crochets].
 Private Const BoiteMail         As String = "BoiteMail"
@@ -70,6 +70,7 @@ Type tuEtatSyst
     Journal                     As tuJournal        ' Options du Journal
     EtatSrv                     As tuEtatSRV        ' Etat du serveur SMTP
     Tray                        As tuTray           ' Menu et icône
+    IDLang                      As Long             ' Identifiant de langue (1033=Anglais, 1036=Français, etc...)
 End Type
 
 
@@ -129,10 +130,11 @@ Function VersionWin() As String
     Select Case Val(VersionWin)
         Case 5:     VersionWin = VersionWin & " (Windows 2000)"
         Case 5.1:   VersionWin = VersionWin & " (Windows XP)"
-        Case 5.2:   VersionWin = VersionWin & " (Windows XP64/Serveur 2003/Serveur 2003 R2)"
-        Case 6:     VersionWin = VersionWin & " (Windows Vista/Serveur 2008)"
-        Case 6.1:   VersionWin = VersionWin & " (Windows 7/Serveur 2008 R2)"
-        Case 6.2:   VersionWin = VersionWin & " (Windows 8/Serveur 2012)"
+        Case 5.2:   VersionWin = VersionWin & " (Windows XP64/Server 2003/Server 2003 R2)"
+        Case 6:     VersionWin = VersionWin & " (Windows Vista/Server 2008)"
+        Case 6.1:   VersionWin = VersionWin & " (Windows 7/Server 2008 R2)"
+        Case 6.2:   VersionWin = VersionWin & " (Windows 8/Server 2012)"
+        Case 6.3:   VersionWin = VersionWin & " (Windows 8.1/Server 2012 R2)"
         Case Else:  ' Rien
     End Select
 End Function
@@ -154,6 +156,6 @@ Function Plateforme() As String
     #ElseIf Win16 Then
         Plateforme = "Win16"
     #Else
-        Plateforme = "Inconnue"
+        Plateforme = Traduit("glb_platform", "Inconnue")
     #End If
 End Function

@@ -1,7 +1,7 @@
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2012 Denis SCHEIDT
+' Copyright 2009-2015 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -243,3 +243,85 @@ Function Joindre(sTableau As Variant, Optional sDelim As String = " ") As String
 
     Joindre = Left$(sResult, j - Len(sDelim) - 1)
 End Function
+
+' Applique une nouvelle langue. Met à jour tous les formulaires ouverts.
+' Doit être Function pour l'appel depuis les menus.
+Function ChangeLang(lIDLang As Long)
+    Dim frm As Form, lNouvLang As Long
+
+    lNouvLang = LangueExiste(lIDLang)                                       ' Appliquer la nouvelle langue.
+    If dtuEtatSyst.IDLang = lNouvLang Then Exit Function                    ' Pas la peine d'appliquer la même langue deux fois de suite.
+
+    dtuEtatSyst.IDLang = lNouvLang
+
+    ' Passer en revue les formulaires ouverts, et y appliquer la nouvelle langue.
+    For Each frm In Application.Forms
+        On Error Resume Next                                                ' La méthode n'existe que pour les formulaires libMAIL.
+        Call frm.ChangeLang
+        On Error GoTo 0
+    Next frm
+
+    ' Mettre aussi à jour le menu contextuel de l'icône.
+    Call LangueMenu
+End Function
+
+' Charge la langue spécifiée à partir du fichier <IDLang>.t9n présent dans le répertoire de la bibliothèque.
+' Si aucun IDLang n'est fourni, charge tous les fichiers trouvés.
+Sub ChargeT9N(Optional ByVal lIDLang As Long = 0)
+    Dim sRepert As String, i As Long, s As String, s1 As String, iNF As Integer, sInput As String, sLigne As Variant
+    Dim rs As DAO.Recordset
+
+    ' Récupérer le nom du répertoire.
+    sRepert = CodeDb.Name
+    ' Position du nom du fichier de base de données dans la chaîne.
+    i = InStr(sRepert, Dir$(sRepert))
+    ' Ne garder que le chemin.
+    sRepert = Left$(sRepert, i - 1)
+
+    ' Ouvrir la table
+    Set rs = CodeDb.OpenRecordset("T9N", dbOpenTable)
+    rs.Index = "PrimaryKey"
+
+    ' Charger les fichiers .t9n présents dans le même répertoire.
+    s = Dir$(sRepert & IIf(lIDLang = 0, "*", lIDLang) & ".t9n", vbNormal)
+ 
+    Do While Len(s) <> 0
+        iNF = FreeFile()
+
+        Open sRepert & s For Input Access Read As #iNF
+        lIDLang = Val(s)                                            ' Récupérer le code langue.
+        Do While Not EOF(iNF)
+            Line Input #iNF, sInput                                 ' Lire une ligne du fichier.
+
+            sInput = Trim$(sInput)                                  ' Supprimer les espaces de début et de fin.
+            ' Si ce n'est pas un commentaire ou une ligne vide.
+            If Not (sInput Like ";*") And Len(sInput) > 0 Then
+                sLigne = Scinder(sInput, "=", 2)                    ' Séparer clé et valeur.
+
+                If UBound(sLigne) = 1 Then                          ' Il y avait au moins un '=' dans la ligne.
+                    ' Créer ou mettre à jour l'enregistrement.
+                    s1 = Trim$(Remplacer((sLigne(0)), vbTab, ""))   ' Supprimer d'éventuelles tabulations dans la clé.
+                    rs.Seek "=", lIDLang, s1
+                    If rs.NoMatch Then
+                        rs.AddNew
+                        rs!IDLang = lIDLang
+                        rs!CleMsg = Trim$(s1)
+                    Else
+                        rs.Edit
+                    End If
+                    rs!MsgT9N = sLigne(1)
+                    rs.Update
+                End If
+
+            End If
+
+        Loop
+
+        Close #iNF
+
+        s = Dir$()                                                  ' Fichier suivant.
+    Loop
+
+    rs.Close
+    Set rs = Nothing
+End Sub

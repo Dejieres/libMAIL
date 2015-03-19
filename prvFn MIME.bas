@@ -139,9 +139,8 @@ Function DecPartie(dtuCM As tuCorpsMIME) As String
         Case "7bit":                DecPartie = dtuCM.Donnee
         Case "quoted-printable":    DecPartie = Dec_QP(dtuCM.Donnee)
         Case "base64":              DecPartie = Dec_Base64(dtuCM.Donnee)
-        Case Else:                  DecPartie = "libMAIL ne gère pas le Content-Transfer-Encoding: " & dtuCM.ContentTransferEncoding & _
-                                                vbCrLf & "=== Partie non décodée. ===" & vbCrLf & _
-                                                dtuCM.Donnee
+        Case Else:                  DecPartie = Traduit("dec_part", "libMAIL ne gère pas le Content-Transfer-Encoding '%s'\n=== Partie non décodée. ===", dtuCM.ContentTransferEncoding) & _
+                                                vbCrLf & "" & vbCrLf & dtuCM.Donnee
     End Select
 
     Select Case dtuCM.Charset

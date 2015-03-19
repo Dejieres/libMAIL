@@ -1,6 +1,6 @@
 Version = 17
 VersionRequired = 17
-Checksum = 677395606
+Checksum = 771801122
 Begin Form
     RecordSelectors = NotDefault
     NavigationButtons = NotDefault
@@ -13,10 +13,10 @@ Begin Form
     Width = 7086
     DatasheetFontHeight = 9
     ItemSuffix = 4
-    Left = 1188
-    Top = 3492
-    Right = 9348
-    Bottom = 8916
+    Left = 945
+    Top = 480
+    Right = 9105
+    Bottom = 5895
     DatasheetGridlinesColor = 12632256
     RecSrcDt = Begin
         0x5cf2efcc338be340
@@ -100,7 +100,7 @@ CodeBehindForm
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2012 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -120,12 +120,25 @@ Option Explicit
 
 
 
+
+
+' Procédure de traduction de l'interface.
+Public Sub ChangeLang()
+    Static T9N_org() As String
+
+    Call LangueCtls(Me.Form, T9N_org())
+
+End Sub
+
+
 Private Sub cmdEfface_Click()
     Call SMTPJnlRAZ
     Call cmdActualiser_Click
 End Sub
 
 Private Sub Form_Load()
+    Call Me.ChangeLang
+
     Me.Visible = True
     Call cmdActualiser_Click
 End Sub

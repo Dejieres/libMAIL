@@ -1,6 +1,6 @@
 Version = 17
 VersionRequired = 17
-Checksum = 557196019
+Checksum = 1054235707
 Begin Form
     RecordSelectors = NotDefault
     AutoCenter = NotDefault
@@ -14,10 +14,10 @@ Begin Form
     Width = 6406
     DatasheetFontHeight = 10
     ItemSuffix = 27
-    Left = 2730
-    Top = 165
-    Right = 9150
-    Bottom = 1005
+    Left = 615
+    Top = 255
+    Right = 7365
+    Bottom = 2730
     TimerInterval = 900000
     DatasheetGridlinesColor = 12632256
     OnUnload ="[Event Procedure]"
@@ -502,7 +502,7 @@ CodeBehindForm
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2012 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -555,6 +555,12 @@ Dim ESMTP_MSG           As tuESMTP_MSG                              ' Options ét
 
 ' *****************************************************************************************************
 ' Méthodes
+' Procédure de traduction de l'interface.
+Public Sub ChangeLang()
+    ' Actualiser le texte de l'icône de notification
+    Call AffIconeNotifSRV(Me.Form, dtuEtatSyst.EtatSrv.Etat)        ' Indicateur d'état du serveur.
+End Sub
+
 ' Démarrage du serveur SMTP. Il commence à scanner la BoiteMail.
 Sub Demarrer()
     Dim bVersTbl As Byte, i As Integer
@@ -564,19 +570,19 @@ Sub Demarrer()
     Call AffIconeNotifSRV(Me.Form, lmlSrvExecCmd)                   ' Indicateur d'état du serveur.
 
     ' Ecrit l'événement de démarrage dans le journal
-    Call Journal("libMAIL version " & VersionProg() & ". Le serveur SMTP démarre.")
+    Call Journal(Traduit("¤smtp_logtitre", "libMAIL version %s. Le serveur SMTP démarre.", VersionProg()))
     On Error Resume Next
     bVersTbl = CurrentDb.TableDefs(TableMail()).Properties!VersTbl
     On Error GoTo 0
-    Call Journal("------ Version de la table " & TableMail() & " : " & bVersTbl)
-    Call Journal("------ Intervalle de scrutation : " & dtuEtatSyst.Serveur.DelaiVerif & " mn.")
-    Call Journal("------ Délai de réponse ....... : " & dtuEtatSyst.Serveur.DelaiReponse & " s.")
-    Call Journal("------ Version de MS-Access ... : " & VersionXS())
-    Call Journal("------ Version de Windows ..... : " & VersionWin())
-    Call Journal("------ Plateforme ............. : " & Plateforme())
-    i = GetSystemDefaultLangID()
-    Call Journal("------ Langue du système ...... : " & i & " - " & LangueSyst(i))
-    Call Journal("------ Emplacement du journal . : [" & dtuEtatSyst.Journal.FichierJnl & "]" & vbCrLf)
+    Call Journal(Traduit("¤smtp_logtblver", "------ Version de la table %s : %s", TableMail(), bVersTbl))
+    Call Journal(Traduit("¤smtp_loginterv", "------ Intervalle de scrutation : %s mn.", dtuEtatSyst.Serveur.DelaiVerif))
+    Call Journal(Traduit("¤smtp_logdelai", "------ Délai de réponse ....... : %s s.", dtuEtatSyst.Serveur.DelaiReponse))
+    Call Journal(Traduit("¤smtp_logaccessver", "------ Version de MS-Access ... : %s", VersionXS()))
+    Call Journal(Traduit("¤smtp_logwindowsver", "------ Version de Windows ..... : %s", VersionWin()))
+    Call Journal(Traduit("¤smtp_logplateforme", "------ Plateforme ............. : %s", Plateforme()))
+    i = GetUserDefaultLangID()
+    Call Journal(Traduit("¤smtp_logsystemlang", "------ Langue du système ...... : %s - %s", i, LangueSyst(i)))
+    Call Journal(Traduit("¤smtp_logempljnal", "------ Emplacement du journal . : [%s]\n", dtuEtatSyst.Journal.FichierJnl))
 
     Me.TimerInterval = 500                                          ' Démarre dans 0.5 seconde.
 End Sub
@@ -587,7 +593,7 @@ Sub Arreter()
     Me.TimerInterval = 0
     Call AffIconeNotifSRV(Me.Form, lmlSrvSuspendu)                  ' Indicateur d'état du serveur.
 
-    Call Journal("Le serveur SMTP est suspendu.")                   ' Ecrit l'événement d'arrêt dans le journal
+    Call Journal(Traduit("¤smtp_arreter", "Le serveur SMTP est suspendu.")) ' Ecrit l'événement d'arrêt dans le journal
 End Sub
 
 ' Relance le Timer après une suspension.
@@ -599,7 +605,7 @@ Sub Relancer()
     dtuEtatSyst.EtatSrv.ScrutSvte = DateAdd("s", dtuEtatSyst.Serveur.DelaiVerif * 60, Now())
     Call AffIconeNotifSRV(Me.Form, lmlSrvAttente)                   ' Indicateur d'état du serveur.
 
-    Call Journal("Le serveur SMTP redémarre.")                      ' Ecrit l'événement d'arrêt dans le journal
+    Call Journal(Traduit("¤smtp_relancer", "Le serveur SMTP redémarre.")) ' Ecrit l'événement d'arrêt dans le journal
 End Sub
 
 ' Envoi (presque) immédiat.
@@ -657,9 +663,7 @@ Private Sub EnvoieTout()
     If rs.RecordCount > 0 Then rs.MoveFirst
     Do While Not rs.EOF And Not dtuEtatSyst.Serveur.Annule          ' Boucler sur les messages en attente, sauf si Annulation demandée.
 
-        Call Journal("Envoi du message " & rs!Identifiant & _
-                     " du " & rs!DateMsg & _
-                     " à " & rs!Destinataires)
+        Call Journal(Traduit("¤Envoi du message %s du %s à %s", rs!Identifiant, rs!DateMsg, rs!Destinataires))
 
         ' Compter les messages.
         dtuEtatSyst.EtatSrv.MessageEnCours = dtuEtatSyst.EtatSrv.MessageEnCours + 1
@@ -723,20 +727,20 @@ Erreur_Comm:
                 rs.Edit
                 rs!Etat = "X"                                       ' Le message ne sera plus envoyé.
                 rs.Update
-                Call Journal(" X  Ce message a été invalidé. libMAIL ne tentera plus de l'envoyer.")
+                Call Journal(Traduit("¤smtp_etinvalide", " X  Ce message a été invalidé. libMAIL ne tentera plus de l'envoyer."))
                 i = EnvoiCMD(lSock, "RSET")
 
             Case REP_DELAI, SOCKET_ERROR                            ' Erreur IP. Ne rien tenter d'autre et sortir.
-                Call AffMsgNotif("Erreur réseau ou dépassement de délai d'attente.", NIIF_ERROR)
+                Call AffMsgNotif(Traduit("smtp_etreseau", "Erreur réseau ou dépassement de délai d'attente."), NIIF_ERROR)
                 Exit Do
 
             Case Else
-                Call Journal("*** Erreur <" & i & "> non gérée !")
+                Call Journal(Traduit("¤smtp_eterreur", "*** Erreur <%s> non gérée !", i))
 
         End Select
 
 Message_Suivant:
-        Call Journal("Fin du message " & rs!Identifiant & " " & String(6, "*") & vbCrLf)
+        Call Journal(Traduit("¤smtp_etfinmsg", "Fin du message %s ******\n", rs!Identifiant))
 
         rs.MoveNext
     Loop
@@ -748,10 +752,10 @@ Message_Suivant:
     ' Afficher une bulle de notification.
     i = dtuEtatSyst.EtatSrv.MessagesTotal - dtuEtatSyst.EtatSrv.MessageEnCours
     If i = 0 Then
-        Call AffMsgNotif("Tous les messages ont été envoyés.", NIIF_INFO)
+        Call AffMsgNotif(Traduit("smtp_etfinok", "Tous les messages ont été envoyés."), NIIF_INFO)
     Else
-        Call AffMsgNotif(i & " erreur(s) lors de l'envoi des messages." & vbCrLf & _
-                             "Consultez le journal de connexion pour en connaître la cause.", NIIF_ERROR)
+        Call AffMsgNotif(Traduit("smtp_etfinerr", "%s erreur(s) lors de l'envoi des messages.\n" & _
+                             "Consultez le journal de connexion pour en connaître la cause.", i), NIIF_ERROR)
     End If
 End Sub
 
@@ -785,14 +789,14 @@ Private Function ListeDestinataires(rsMail As DAO.Recordset) As Integer
                 iNbDest = iNbDest + 1                               ' Destinataire accepté.
             Else
                 ' Destinataire rejeté.
-                Call Journal("*** Ce destinataire a été rejeté par le serveur distant.")
+                Call Journal(Traduit("¤smtp_destrej", "*** Ce destinataire a été rejeté par le serveur distant."))
             End If
         End If
     Next i
 
     If iNbDest <> iDestNV Or iNbDest = 0 Then                       ' Tous les destinataires 'non-vides' ont-ils été acceptés ?
         i = i - 1
-        s = i - iNbDest & " destinataire(s) sur " & i & " invalide(s)."
+        s = Traduit("smtp_desterr", "%s destinataire(s) sur %s invalide(s).", i - iNbDest, i)
         Call AffMsgNotif(s, NIIF_WARNING)
         Call Journal("*** " & s)
     End If
@@ -833,8 +837,8 @@ Private Function EnvoieCorps(lSock As Long, sDonnees As String) As Integer
 
         If dtuEtatSyst.Serveur.Annule And dtuEtatSyst.EtatSrv.Etat <> lmlSrvAnnulation Then    ' Annulation de l'envoi demandée.
             Call AffIconeNotifSRV(Me.Form, lmlSrvAnnulation)        ' Affiche l'icône d'annulation.
-            Call AffMsgNotif("Annulation de l'envoi. Le message en cours se termine.", NIIF_WARNING)
-            Call Journal("*** L'envoi a été annulé par l'utilisateur.")
+            Call AffMsgNotif(Traduit("smtp_ecannul", "Annulation de l'envoi. Le message en cours se termine."), NIIF_WARNING)
+            Call Journal(Traduit("¤smtp_ecannul1", "*** L'envoi a été annulé par l'utilisateur."))
         End If
 
         d = f + 2                                                   ' Déplacer les pointeurs.
@@ -944,7 +948,7 @@ Private Function Authentification() As Integer
 
                         Else
                             i = 5                                   ' Erreur fatale
-                            Call Journal("*** Erreur lors de l'authentification DIGEST-MD5.")
+                            Call Journal(Traduit("¤smtp_autherrmd5", "*** Erreur lors de l'authentification DIGEST-MD5."))
 
                         End If
                     End If
@@ -961,11 +965,11 @@ Private Function Authentification() As Integer
         If bNonSupportee Then
             v = NomMethodeAuth(.Methode)
             If IsNull(v) Then
-                Call Journal("*** La méthode d'authentification [" & .Methode & "] n'est pas prise en charge par libMAIL.")
+                Call Journal(Traduit("¤smpt_autherrmeth1", "*** La méthode d'authentification [%s] n'est pas prise en charge par libMAIL.", .Methode))
             Else
-                Call Journal("*** L'authentification '" & v & "' n'est pas prise en charge par " & dtuEtatSyst.Serveur.NomSrv)
+                Call Journal(Traduit("¤smpt_autherrmeth2", "*** L'authentification '%s' n'est pas prise en charge par %s.", v, dtuEtatSyst.Serveur.NomSrv))
             End If
-            Call Journal("*** Tentative d'envoi sans authentification.")
+            Call Journal(Traduit("¤smtp_authnometh", "*** Tentative d'envoi sans authentification."))
         End If
     End With
 
@@ -1081,8 +1085,8 @@ Private Sub Form_Timer()
 
     i = NbMails()                                                   ' Nombre de messages en attente d'envoi.
 
-    Call Journal("Scrutation démarrée sur " & UCase$(myComputerName()) & vbCrLf)
-    Call Journal("Il y a " & i & " message(s) en attente.")
+    Call Journal(Traduit("¤smtp_tmrdebut", "Scrutation démarrée sur %s\n", UCase$(myComputerName())))
+    Call Journal(Traduit("¤smtp_tmrnmsg", "Il y a %s message(s) en attente.", i))
     If i = 0 Then GoTo Fin_du_serveur
 
     dtuEtatSyst.EtatSrv.MessagesTotal = i
@@ -1185,7 +1189,7 @@ Fin_du_serveur:
         End With
         Call AffIconeNotifSRV(Me.Form, lmlSrvAttente)               ' Indicateur d'état du serveur.
 
-        Call Journal("Prochaine vérification : " & dtuEtatSyst.EtatSrv.ScrutSvte)
+        Call Journal(Traduit("¤smtp_tmrscansvt", "Prochaine vérification : %s", dtuEtatSyst.EtatSrv.ScrutSvte))
         Call Journal(String(80, "*") & vbCrLf & vbCrLf)
 
         Me.TimerInterval = dtuEtatSyst.Serveur.DelaiVerif * 60000   ' Rétablir la temporisation (convertir de minutes en millisecondes)
@@ -1193,7 +1197,7 @@ Fin_du_serveur:
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-    Call Journal("Déchargement du serveur.")
+    Call Journal(Traduit("¤smtp_frmuload", "Déchargement du serveur."))
     Call Journal(String(80, "*") & vbCrLf & vbCrLf)
 
     With dtuEtatSyst.EtatSrv

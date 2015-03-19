@@ -1,0 +1,438 @@
+; Language 1033 : English (US)
+; Version 1.00 - 15-dec-2014
+
+; Key name max. length = 50 car.
+; %s is a placeholder for parameters.
+; \n stands for carriage return and \t for tabulation.
+
+; prvFn Icones et menus.AffIconeNotif()
+; -------------------------------------
+icn_unknown	=Unknown
+icn_unload	=Unloaded.
+icn_paused	=Paused.
+icn_wait	=Waiting.
+icn_nextscan=Next poll :
+icn_sending	=Sending.
+icn_cancel	=Cancelling after the current mail is transmitted.
+
+; prvFn Icones et menus.CreeMenu()
+; --------------------------------
+mnu_pause  =&Suspend
+mnu_resume =&Resume
+mnu_sendnow=S&end now
+mnu_unload =&Unload
+mnu_cancel =&Cancel
+mnu_newmsg =&New mail...
+mnu_mbm	   =&Mailbox manager...
+mnu_status =&Status
+mnu_log	   =&Display log file...
+mnu_langue =&Language
+mnu_about  =&About...
+
+; prvFn MIME.DecPartie()
+; ----------------------
+dec_part=libMAIL has no support for '%s' Content-Transfer-Encoding\n=== Part not decoded. ===
+
+; prvFn SMTP.CnxServ()
+; --------------------
+cnx_wsockinit  =Initializing Winsock... LastError=[%s]
+cnx_wsockcreate=Creating socket... (%s). LastError=[%s]
+cnx_err_dns	   =Error resolving name [%s].
+cnx_connect	   =Connecting to server %s [%s], on port %s... LasError=[%s]
+cnx_error	   =*** Unable to connect ***
+cnx_socket	   =WinSock : non-blocking mode. LastError=[%]
+
+; prvFn SMTP.CnxFin()
+; -------------------
+cnx_close  =Closing socket... (%s). LastError=[%s]
+cnx_cleanup=Freeing resources. LastError=[%s]
+
+; prvFn SMTP.EnvoiCMD()
+; ---------------------
+cmd_authdata   =--> <*Authentication data*>, LastError=[%s]
+cmd_senderror  =*** Socket error during send().
+cmd_sendtimeout=*** Timed out in WSSelect().
+cmd_rcverror   =*** Socket error while receiving, LastError=[%s]
+cmd_cnxclose   =*** Connection closed by remote server, LastError=[%s]
+cmd_rcvtimeout =*** Receive time out.
+
+; prvFn SMTP.NomMethodeAuth()
+; ---------------------------
+auth_none=None
+
+; prvGlobales.Plateforme()
+; ------------------------
+glb_platform=Unknown
+
+; pubFn Mail.ModifieMail()
+; ------------------------
+mod_impossible=It's not possible to modify a mail while the server processes messages in the outbox.
+
+; pubFn Mail.PJFichier()
+; ----------------------
+att_notexists=***** The file '%s' does not exist. ***** -\n%s %s
+
+; pubFn Mail.VerifieBAL()
+; -----------------------
+tbl_notexists=Error : the table '%s' was not found...
+tbl_nocreate =The table '%s' cannot be created inside the library database !\nYou must call this function from your application database.
+tbl_create	 =The table '%s' does not exist in your database.\nDo you want to create it now ?
+
+; pubFn SMTP.SMTPTest()
+; ---------------------
+tst_unavail	 =The current state of the server does not allow the execution of this command...
+tst_connect	 =Connecting to %s on port %s\n
+tst_errehlo	 = The server rejects the EHLO command... \n
+tst_cnxrefuse= The server refuses the connection... \n
+tst_cnxerror =Unable to connect...\nError %s, socket %s
+
+; frm_APropos controls
+; --------------------
+APropos.Caption				   =About...
+APropos.lblTexte1.Caption	   =Simple SMTP sender
+APropos.lblTexte2.Caption	   =library for MS-Access®97 and newer.
+APropos.txtLicence.Value	   =This program is free software; you can redistribute it and / or modify it under the terms of the GNU LGPL license (Lesser General Public License) as published by the Free Software Foundation; either version 3 of the License, or (according to taste) later.\nThis program is distributed in the hope to be useful, but WITHOUT ANY WARRANTY; or even implied.\nRead the GNU LGPL for details. You should have received a copy of the GNU Lesser Public License along with this program; if not, write to the\nFree Software Foundation, Inc.\n51 Franklin St, Fifth Florr\nBoston, MA 02110-1301 USA
+APropos.txtContrib.Value	   =Hervé Inisan : Tests, debugging and corrections.
+APropos.pgContributions.Caption=Contributors
+APropos.pgLicence.Caption	   =License
+APropos.cmdOK.Caption		   =OK
+apropos_mailbody1			   =Configuration of my PC
+apropos_mailbody2			   =Version of table %s : %s
+apropos_mailbody3			   =MS-Access version
+apropos_mailbody4			   =Windows version
+apropos_mailbody5			   =Platform
+
+; frm_EditeMail controls
+; ----------------------
+EditeMail.Caption=E-mail
+edm_CaptionNM	 =Create new message.
+edm_CaptionMM	 =Modifying message n°%s
+
+; Form header section
+; -------------------
+EditeMail.lblDe.Caption	  =&From :
+EditeMail.lblA.Caption	  =&To :
+EditeMail.lblCC.Caption	  =&CC :
+EditeMail.lblBCC.Caption  =&BCC :
+EditeMail.lblObjet.Caption=&Subject :
+
+; Format properties
+; -----------------
+EditeMail.txtDe.Format	 =@;[Blue]"Sender's mail address."
+EditeMail.txtA.Format	 =@;[Blue]"Recipients."
+EditeMail.txtCC.Format	 =@;[Blue]"Carbon copy recipients."
+EditeMail.txtBCC.Format	 =@;[Blue]"Blind carbon copy recipients."
+EditeMail.txtObjet.Format=@;[Blue]"Enter subject here."
+
+; Tooltip properties
+; ------------------
+EditeMail.txtDe.ControlTipText	 =Sender's mail address
+EditeMail.txtA.ControlTipText	 =Semicolon separated recipients list
+EditeMail.txtCC.ControlTipText	 =Semicolon separated carbon copy recipients list
+EditeMail.txtBCC.ControlTipText	 =Semicolon separated blind carbon copy recipients list
+EditeMail.txtObjet.ControlTipText=Enter subject for the mail here
+
+;Form detail section
+; ------------------
+EditeMail.pgText.Caption		=Plain text
+EditeMail.pgHTML.Caption		=HTML
+EditeMail.txtMessage.Format		=@;[Blue]"Enter your message here."
+EditeMail.txtMsgHTML.Format		=@;[Blue]"Place your HTML code here."
+EditeMail.cmdHTML.ControlTipText=Load an HTML file.
+
+; Form footer section
+; -------------------
+EditeMail.pgPJ.Caption			  =&Attachments
+EditeMail.pgDSN.Caption			  =&Notifications
+EditeMail.pgOptions.Caption		  =&Options
+EditeMail.pgOptSrv.Caption		  =S&erver
+EditeMail.pgPJ.ControlTipText	  =List of files to attach to the message.
+EditeMail.pgDSN.ControlTipText	  =SMTP Delivery Success Notifications.
+EditeMail.pgOptions.ControlTipText=Message Disposition Notifications.
+EditeMail.pgOptSrv.ControlTipText =SMTP server options.
+EditeMail.lblNbPJ.Caption		  =Attachments :
+edm_txtNbPJ						  =%s element(s) for a total size of %s byte(s).
+EditeMail.cmdEnregistrer.Caption  =Save
+EditeMail.cmdRAZ.Caption		  =Reset
+EditeMail.cmdRAZ.ControlTipText	  =Reset all fields on this form.
+EditeMail.cmdAnnuler.Caption	  =Close
+EditeMail.lblEnvImmed.Caption	  =and send immediately the message.
+EditeMail.lblOuvert.Caption		  =Keep this form open.
+
+; Attachments tab.
+; ----------------
+EditeMail.cmdAjouter.Caption	   =&Add file...
+EditeMail.cmdPJOA.Caption		   =A&dd object...
+EditeMail.cmdRetirer.Caption	   =&Remove
+EditeMail.cmdAjouter.ControlTipText=Add a file from disk.
+EditeMail.cmdPJOA.ControlTipText   =Add a MS-Access object.
+EditeMail.cmdRetirer.ControlTipText=Remove an attachment.
+
+; DSN tab.
+; --------
+EditeMail.lblDSN.Caption				=Delivery Notifications (DSN)
+EditeMail.lblNotifier.Caption			=Notify
+EditeMail.lblNotJamais.Caption			=Ne&ver
+EditeMail.lblNotSucces.Caption			=S&uccess
+EditeMail.lblNotEchec.Caption			=&Fail
+EditeMail.lblNotDiffere.Caption			=&Delayed
+EditeMail.chkNOT_128.ControlTipText		=No notification will be sent.
+EditeMail.chkNOT_1.ControlTipText		=Notify if delivery was successful.
+EditeMail.chkNOT_2.ControlTipText		=Notify if delivery failed.
+EditeMail.chkNOT_4.ControlTipText		=Notify if delivery was delayed.
+EditeMail.lblNotRetour.Caption			=Return
+EditeMail.lblNotRetDefaut.Caption		=Remote server de&fault value
+EditeMail.lblNotRetET.Caption			=&Headers only
+EditeMail.lblNotRetMsg.Caption			=Ori&ginal message
+EditeMail.optNotRetDefaut.ControlTipText=Uses remote SMTP server default configuration.
+EditeMail.optNotRetET.ControlTipText	=Notification contains only the headers from the original message.
+EditeMail.optNotRetMsg.ControlTipText	=Notification contains a copy of the original message.
+EditeMail.lblEnvID.Caption				=Enveloppe ID
+EditeMail.chkEnvID.ControlTipText		=Add an identifier to the message.
+EditeMail.txtEnvID.ControlTipText		=Message identifier (94 car. max)
+
+; Options tab.
+; ------------
+EditeMAil.lblOptAR.Caption		   =Delivery notification to
+EditeMAil.cmdExp01.ControlTipText  =Same as 'From' field.
+EditeMAil.lblOptMDN.Caption		   =Disposition notification
+EditeMAil.cmdExp02.ControlTipText  =Same as 'From' field.
+EditeMAil.lblOptRepondre.Caption   =Reply to
+EditeMAil.txtReplyTo.ControlTipText=Addresses to reply to.
+EditeMAil.lblOptEnvoyeur.Caption   =Sender
+EditeMAil.txtSender.ControlTipText =Sender's address.
+EditeMAil.lblOptPrio.Caption	   =Priority
+edm_priorite5=Low
+edm_priorite3=Normal
+edm_priorite1=High
+EditeMAil.lblOptApres.Caption	   	 =Send message after :
+EditeMAil.txtDifferer.Format	   	 =dddd\ mm-dd-yyyy\ hh:nn:ss;;[Blue]"Not delayed";[Blue]"Not delayed"
+EditeMAil.txtDifferer.ControlTipText =Message will not be sent\nbefore this date/time.
+EditeMAil.lblOptGarder.Caption		 =Keep message until :
+EditeMAil.txtConserver.Format		 =dddd\ mm-dd-yyyy\ hh:nn:ss;;[Blue]"Not kept";[Blue]"Not kept"
+EditeMAil.txtConserver.ControlTipText=Message will not be purged\nbefore this date/time.
+
+; Server tab.
+-------------
+EditeMAil.lblOptSrv.Caption			  =Remote server
+EditeMAil.lblOptSrvNom.Caption		  =Name
+EditeMAil.txtNomSrv.ControlTipText	  =Remote SMTP server name
+EditeMail.txtPort.ControlTipText	  =Connection port
+EditeMAil.txtHELODomain.ControlTipText=Text indentifiing the sender in the EHLO commmand.
+EditeMAil.lblOptSrvAuth.Caption		  =Authentication
+EditeMAil.lblOptSrvMethode.Caption	  =Method
+EditeMAil.lblOptSrvID.Caption		  =User ID
+EditeMAil.txtAUTH_ID.ControlTipText	  =User name or ID.
+EditeMAil.lblOptSrvMDP.Caption		  =Password
+EditeMAil.txtAUTH_MDP.ControlTipText  =Password associated with the user name or ID.
+EditeMAil.lblOptSrvNote.Caption		  =Notice :\nThese options apply only when the message is sent immediately. They are ignored if the mail is stored to be sent later.
+
+; Code behind Form.
+; frm_EditeMail.IDMail()
+; ----------------------
+edm_idmailNF =The message you asked for does not exist, or it is not in the outbox.
+edm_idmailNFt=Modifying message %s
+
+; frm_EditeMail.ListePJ()
+; -----------------------
+edm_lpj_PJ	  =Attachment
+edm_lpj_Taille=Size
+edm_lpj_Chemin=Path
+
+; frm_EditeMail.VerifEnvoiImmed()
+; -------------------------------
+edm_veimmed01=   Server name\n
+edm_veimmed02=   HELODomain\n
+edm_veimmed03=   User ID\n
+edm_veimmed04=   Password\n
+edm_veimmed05=Message cannot be sent immediately because the following fields are not filled out :\n%s\n- Click 'OK' to save the message and send it later ;\n- Click 'Cancel' to return to message editing and complete the missing informations.
+edm_veimmed06=Cannot send immediately
+
+; frm_EditeMail.RAZModif()
+; ------------------------
+raz_log01=%s : Temporary file %s has been deleted.
+raz_log02=%s : Temporary file %s has not been deleted because it could not be found.
+
+; frm_EditeMail.cmdHTML_Click()
+; -----------------------------
+html_filtre01=HTML Files
+html_filtre02=All files
+html_dialog	 =Choose the HTML file ton insert...
+html_tronque =This file is longer than 64000 bytes. It will be truncated to this length.\nDo you want to import it anyway ?
+html_convert =libMAIL can convert the HTML message to plain text and put it in the Plain text tab.\nDo you want to replace the existing plain text message ?
+
+; frm_EditeMail.cmdAjouter_Click()
+; --------------------------------
+cmdaj_filtre01=Image files"
+cmdaj_filtre02=Office documents
+cmdaj_filtre03=PDF files
+cmdaj_filtre04=All files
+cmdaj_dialog  =File(s) to attach to the message...
+
+; frm_EditeMail.cmdEnregistrer_Click()
+; ------------------------------------
+cmdenr_adrexp	 =You must fill in the sender's address before saving the message.
+cmdenr_nodest	 =This message will not be sent because you did not enter a recipient.\nDo you want to save it anyway ?
+cmdenr_noobj	 =This message has a blank subjet field.\nDo you want to save it anyway ?
+cmdenr_bcc		 =Some e-mail systems can add a "Apparently-To" field to messages that only have BCC recipients. This field, if added, will list all the recipients of your message.\nYou should enter at least one To or CC recipient to avoid this.\nDo you want to save the message anyway ?
+cmdenr_envmult	 =The Sender field can contain only one address !
+cmdenr_DeEnvoyeur='From' and 'Sender' fields where identical. Sender field has been cleared.
+cmdenr_msgmod	 =The modifications made to message '%s' where saved.
+cmdenr_msgcre	 =The message was created with ID '%s'
+cmdenr_etat		 =The current state of libMAIL does not allow it to send the message immediately. The message was saved in the %s table and will be sent during the next poll.
+
+; frm_EditeMail.cmdRAZ_Click()
+; ----------------------------
+cmdraz_confirm=Do you want to clear all fields of the form?\n(Any unsaved changes will be lost !)
+
+; frm_EditeMail.Form_Load()
+; -------------------------
+frmld_meth01=None
+frmld_meth02=LOGIN (password sent in plain text)
+frmld_meth03=PLAIN (password sent in plain text)
+
+; Form frm_EtatSRV
+; ----------------
+EtatSRV.lblEtat.Caption	   =Status :
+EtatSRV.lblEtatSRV.Caption =-- Unknown --
+EtatSRV.lblMsg.Caption     =Message :
+EtatSRV.lblProgres.Caption =Progression :
+EtatSRV.lblTpsEcou.Caption =Elapsed time :
+EtatSRV.lblTpsRest.Caption =Remain. time :
+EtatSRV.lblNextScan.Caption=Next poll :
+EtatSRV.cmdAPropos.Caption =About...
+EtatSRV.cmdEnvoie.Caption  =Send now
+EtatSRV.cmdJournal.Caption =View log
+EtatSRV.cmdFermer.Caption  =Close
+
+; frm_EtatSRV.MAJ()
+; -----------------
+etat_inactif=*** Inactive ***
+etat_connect=Connectiong...
+etat_demarre=Starting...
+etat_msgsur= of
+etat_kiosur= KiB of
+etat_kio= KiB.
+etat_inconnu=** Unknown **
+etat_fmtdate=mm-dd-yyyy hh:nn:ss
+
+; Form frm_GestionBoiteMail
+; -------------------------
+GestionBoiteMail.caption=Mailbox manager
+gbm_titre=%s table manager
+GestionBoiteMail.cmdNouveauMSG.ControlTipText	=Create message...
+GestionBoiteMail.cmdModifMSG.ControlTipText		=Edit selected message...
+GestionBoiteMail.cmdSupprSEL.ControlTipText		=Move selected message(s) to trash.
+GestionBoiteMail.lstDeplaceMSG.Format			=&;[Blue]"Move selection to..."
+GestionBoiteMail.cmdVideCorbeille.ControlTipText=Empty trash.
+GestionBoiteMail.cmdActualiser.ControlTipText	=Refresh.
+GestionBoiteMail.cmdExport.ControlTipText		=Export selected message to an eml file.
+gbm_E=Outbox
+gbm_V=Sent items
+gbm_X=Errors
+gbm_D=Trash
+
+; frm_GestionBoiteMail.TrtPossible()
+; ----------------------------------
+gbm_nosel	  =Your selection is empty.
+gbm_impossible=This action is not possible while libMAIL processes messages from the Outbox.
+
+; frm_GestionBoiteMail.cmdExport_Click()
+; --------------------------------------
+gbm_noseleml	=You must select the message to export.
+gbm_emlfiltre01	=eml files
+gbm_emlfiltre02	=All files
+gbm_emlexport	=Export message '%s'.
+gbm_emlexpsucces=The message has been written to file %s.
+gbm_emlexperreur=Error %s, %s while writing the message to the file %s.
+
+; frm_GestionBoiteMail.cmdSupprSEL_Click()
+; ----------------------------------------
+gbm_supprconfirm=Are you sure you want to %s the selected item(s)
+gbm_supprdel	=delete
+gbm_supprtrash	=move to the trash
+
+; frm_GestionBoiteMail.cmdVideCorbeille_Click()
+; ---------------------------------------------
+gbm_videconfirm=Are-you sure you want to empty the trash ?
+
+; frm_GestionBoiteMail.lstDeplaceMSG_AfterUpdate()
+; ------------------------------------------------
+gmb_deplaceidem	  =Source and destination folder are identical !
+gbm_deplaceconfirm=Are you sure you want to move the selected item(s) from '%s' to '%s' ?
+
+; Form sf_GestionBM_Dossiers
+; --------------------------
+GestionBM_Dossiers.lblDossiers.Caption=Folders
+GestionBM_Dossiers.txtNbMSG.Format	  =[Blue]0" message(s)";"Error";[Red]"No message";"Error."
+
+; Form sf_GestionBM_Msg
+; ---------------------
+GestionBM_Msg.lblTitre.Caption=Messages
+GestionBM_Msg.lblDate.Caption =Date
+GestionBM_Msg.lblDest.Caption =Recipients
+GestionBM_Msg.lblObjet.Caption=Subject
+
+; Form frm_Journal
+; ----------------
+Journal.Caption				 =Connexion log viewer
+Journal.cmdActualiser.Caption=Refresh
+Journal.cmdEfface.Caption	 =Clear
+
+; Form frm_SMTP
+; frm_SMTP.Demarrer()
+; -------------------
+smtp_logtitre     =libMAIL version %s. Server starts up.
+smtp_logtblver    =------ Table %s version : %s
+smtp_loginterv    =------ Polling interval ....... : %s mn.
+smtp_logdelai     =------ Time out ............... : %s s.
+smtp_logaccessver =------ MS-Access version ...... : %s
+smtp_logwindowsver=------ Windows version ........ : %s
+smtp_logplateforme=------ Platform ............... : %s
+smtp_logsystemlang=------ System language ........ : %s - %s
+smtp_logempljnal  =------ Path to log file ....... : [%s]\n
+
+; frm_SMTP.Arreter()
+; ------------------
+smtp_arreter=The SMTP server is paused.
+
+; frm_SMTP.Relancer()
+; -------------------
+smtp_relancer=The SMTP server restarts.
+
+; frm_SMTP.EnvoieTout()
+; ---------------------
+smtp_etenvoie  =Sending message %s of %s to %
+smtp_etinvalide= X  This message has been invalidated. libMAIL will not try to send it again.
+smtp_etreseau  =Network error or timeout.
+smtp_eterreur  =Unmanaged error <%s> !
+smtp_etfinmsg  =End of message %s ******\n
+smtp_etfinok   =All messages have been sent.
+smtp_etfinerr  =%s error(s) occurred while sending the messages.\nCheck the connection log to get more information on these errors.
+
+;frm_SMTP.ListeDestinataires()
+; ----------------------------
+smtp_destrej=*** This recipient has been rejected by the remote server.
+smtp_desterr=%s invalid recipient(s) of %s.
+
+; frm_SMTP.EnvoieCorps()
+; ----------------------
+smtp_ecannul =Cancelling transmission after the current message.
+smtp_ecannul1=*** Transmission cancelled by user.
+
+; frm_SMTP.Authentification()
+; ---------------------------
+smtp_autherrmd5  =*** Error during DIGEST-MD5 authentication.
+smtp_autherrmeth1=*** The authentication method [%] is not supported by libMAIL.
+smtp_autherrmeth2=*** Authentication '%s' is not supported by %s.
+smtp_authnometh  =*** Trying to send without authentication.
+
+; frm_SMTP.Form_Timer()
+; ---------------------
+smtp_tmrdebut  =Poll started on %s\n
+smtp_tmrnmsg   =%s message(s) to be sent.
+smtp_tmrscansvt=Next poll : %s
+
+; frm_SMTP.Form_Unload()
+; ----------------------
+smtp_frmuload=Unloading the server.

@@ -1,7 +1,7 @@
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2013 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -148,7 +148,7 @@ Sub ModifieMail(sIdentifiant As String, Optional bAttendre As Boolean = False)
 
     ' Impossible pendant un envoi, car les messages en état 'E' ont déjà été sélectionnés par frm_SMTP.
     If dtuEtatSyst.EtatSrv.Etat = lmlSrvEnCours Or dtuEtatSyst.EtatSrv.Etat = lmlSrvConnexion Then
-        MsgBox "Il n'est pas possible de modifier un message alors que le serveur traite les messages de la boite d'envoi.", vbExclamation
+        MsgBox Traduit("mod_impossible", "Il n'est pas possible de modifier un message alors que le serveur traite les messages de la boite d'envoi."), vbExclamation
         Exit Sub
     End If
 
@@ -174,7 +174,7 @@ Function PJFichier(sSpecFichier As String, Optional lNbCar As Long = -1) As Stri
         PJFichier = Input(l, #i)                                ' On lit tout d'un coup !
         Close #i
     Else
-        PJFichier = "***** Le fichier " & sSpecFichier & " n'existe pas. ***** -" & vbCrLf & Err.Number & " " & Err.Description
+        PJFichier = Traduit("att_notexists", "***** Le fichier '%s' n'existe pas. ***** -\n%s %s", sSpecFichier, Err.Number, Err.Description)
     End If
 End Function
 
@@ -257,17 +257,17 @@ Function VerifieBAL() As Boolean
     If tblBoiteMail Is Nothing Then                                 ' La table n'existait pas, il faut la créer.
 #If mySQL Then
         ' Test simplifié pour une table attachée mySQL (ou autre).
-        MsgBox "Problème : la table BoiteMail n'a pas été trouvée...", vbCritical + vbOKOnly, "Bibliothèque libMAIL"
+        MsgBox Traduit("tbl_notexists", "Problème : la table '%s'n'a pas été trouvée...", sNomTable), vbCritical + vbOKOnly, "Bibliothèque libMAIL"
 
 #Else
         If Application.GetOption("Project Name") = "libMAIL" Then   ' On ne peut pas la créer dans la bibliothèque
-            MsgBox "Il n'est pas possible de créer la table " & sNomTable & " dans la base de données bibliothèque !" & vbCrLf & _
-                   "Vous devez appeler cette fonction depuis votre application.", vbExclamation
+            MsgBox Traduit("tbl_nocreate", "Il n'est pas possible de créer la table '%s' dans la base de données bibliothèque !\n" & _
+                   "Vous devez appeler cette fonction depuis votre application.", sNomTable), vbExclamation
 
         ' On propose de créer la boîte mail, dans la base active.
         Else
-            If MsgBox("La table " & sNomTable & " n'existe pas dans votre base de données." & vbCrLf & _
-                      "Voulez-vous la créer ?", vbYesNo + vbQuestion + vbDefaultButton2) = vbYes Then
+            If MsgBox(Traduit("tbl_create", "La table '%s' n'existe pas dans votre base de données.\nVoulez-vous la créer ?", sNomTable), _
+                      vbYesNo + vbQuestion + vbDefaultButton2) = vbYes Then
                 ' On crée la boîte mail
                 db.Execute "CREATE TABLE " & sNomTable & " (Identifiant TEXT (18) CONSTRAINT PrimaryKey PRIMARY KEY, Utilisateur TEXT (25), DateMsg DATETIME, Etat TEXT (1), " & _
                            "Expediteur TEXT (255), Destinataires LONGTEXT, CC LONGTEXT, BCC LONGTEXT, Objet TEXT (255), CorpsMsg LONGTEXT, ESMTP LONGTEXT," & _

@@ -1,6 +1,6 @@
 Version = 17
 VersionRequired = 17
-Checksum = -2060155716
+Checksum = 306782919
 Begin Form
     PopUp = NotDefault
     RecordSelectors = NotDefault
@@ -17,10 +17,10 @@ Begin Form
     Width = 5842
     DatasheetFontHeight = 10
     ItemSuffix = 21
-    Left = 708
-    Top = 1776
-    Right = 8160
-    Bottom = 5916
+    Left = 1680
+    Top = 1590
+    Right = 9135
+    Bottom = 5730
     TimerInterval = 1000
     DatasheetGridlinesColor = 12632256
     RecSrcDt = Begin
@@ -90,7 +90,7 @@ Begin Form
                     Width = 1361
                     Height = 284
                     FontWeight = 700
-                    Name ="Étiquette3"
+                    Name ="lblEtat"
                     Caption ="Etat :"
                     FontName ="Arial"
                 End
@@ -115,7 +115,7 @@ Begin Form
                     Width = 1361
                     Height = 283
                     FontWeight = 700
-                    Name ="Étiquette5"
+                    Name ="lblMsg"
                     Caption ="Message :"
                     FontName ="Arial"
                 End
@@ -137,7 +137,7 @@ Begin Form
                     Width = 1367
                     Height = 283
                     FontWeight = 700
-                    Name ="Étiquette7"
+                    Name ="lblProgres"
                     Caption ="Progression :"
                     FontName ="Arial"
                 End
@@ -190,7 +190,7 @@ Begin Form
                     Width = 1361
                     Height = 284
                     FontWeight = 700
-                    Name ="Étiquette13"
+                    Name ="lblTpsEcou"
                     Caption ="Temps écoulé :"
                     FontName ="Arial"
                 End
@@ -201,7 +201,7 @@ Begin Form
                     Width = 1361
                     Height = 284
                     FontWeight = 700
-                    Name ="Étiquette14"
+                    Name ="lblTpsRest"
                     Caption ="Temps restant :"
                     FontName ="Arial"
                 End
@@ -245,7 +245,7 @@ Begin Form
                     Width = 1361
                     Height = 284
                     FontWeight = 700
-                    Name ="Étiquette19"
+                    Name ="lblNextScan"
                     Caption ="Prochaine scrut. :"
                     FontName ="Arial"
                 End
@@ -322,7 +322,7 @@ CodeBehindForm
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2012 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -342,6 +342,13 @@ Option Explicit
 
 
 
+' Procédure de traduction de l'interface.
+Public Sub ChangeLang()
+    Static T9N_org() As String
+
+    Call LangueCtls(Me.Form, T9N_org())
+End Sub
+
 
 
 ' Mise à jour des informations d'état
@@ -351,40 +358,40 @@ Private Sub MAJ()
     With Me.lblEtatSRV
         Select Case dtuEtatSyst.EtatSrv.Etat
             Case lmlSrvDecharge
-                .Caption = "** Inactif **"
+                .Caption = Traduit("etat_inactif", "** Inactif **")
                 .ForeColor = RGB(255, 255, 255) ' Blanc
                 .BackColor = 0                  ' sur Noir
 
             Case lmlSrvSuspendu
-                .Caption = "Suspendu."
+                .Caption = Traduit("icn_paused", "Suspendu.")
                 .ForeColor = RGB(255, 0, 0)     ' Rouge
                 .BackColor = vbButtonFace       ' Couleur du formulaire
 
             Case lmlSrvAttente
-                .Caption = "En attente."
+                .Caption = Traduit("icn_wait", "En attente.")
                 .ForeColor = RGB(255, 128, 0)   ' Orange
                 .BackColor = vbButtonFace       ' Couleur du formulaire
 
             Case lmlSrvEnCours
-                .Caption = "Envoi en cours."
+                .Caption = Traduit("icn_sending", "Envoi en cours.")
                 .ForeColor = RGB(0, 128, 0)     ' Vert
                 .BackColor = vbButtonFace       ' Couleur du formulaire
 
             Case lmlSrvConnexion
-                .Caption = "Connexion..."
+                .Caption = Traduit("etat_connect", "Connexion...")
                 .ForeColor = 0
                 .BackColor = vbButtonFace
 
             Case lmlSrvExecCmd
-                .Caption = "Démarrage..."
+                .Caption = Traduit("etat_demarre", "Démarrage...")
                 .ForeColor = 0
                 .BackColor = vbButtonFace
 
         End Select
     End With
 
-    Me.lblMessage.Caption = dtuEtatSyst.EtatSrv.MessageEnCours & " sur " & dtuEtatSyst.EtatSrv.MessagesTotal
-    Me.lblProgBarTxt.Caption = dtuEtatSyst.EtatSrv.OctetsEnvoyes \ 1024 & " Kio sur " & dtuEtatSyst.EtatSrv.OctetsTotal \ 1024 & " Kio."
+    Me.lblMessage.Caption = dtuEtatSyst.EtatSrv.MessageEnCours & Traduit("etat_msgsur", " sur") & " " & dtuEtatSyst.EtatSrv.MessagesTotal
+    Me.lblProgBarTxt.Caption = dtuEtatSyst.EtatSrv.OctetsEnvoyes \ 1024 & Traduit("etat_kiosur", " Kio sur") & " " & dtuEtatSyst.EtatSrv.OctetsTotal \ 1024 & Traduit("etat_kio", " Kio.")
 
     If dtuEtatSyst.EtatSrv.EnvoiDebut <> CDate(0) Then
         If dtuEtatSyst.EtatSrv.EnvoiFin = CDate(0) Then
@@ -405,15 +412,15 @@ Private Sub MAJ()
 
     ' Débit
     If lTps <> 0 Then lDebit = dtuEtatSyst.EtatSrv.OctetsEnvoyes / 1024 / lTps
-    Me.lblDebit.Caption = lDebit & " Kio/s."
+    Me.lblDebit.Caption = lDebit & Traduit("etat_kio", " Kio/s.")
 
     ' Temps restant
     If lDebit <> 0 Then lTpsReste = (dtuEtatSyst.EtatSrv.OctetsTotal - dtuEtatSyst.EtatSrv.OctetsEnvoyes) / 1024 / lDebit
     Me.lblTpsRestant.Caption = lTpsReste & " s."
 
     Me.lblScrutSvte.Caption = IIf(dtuEtatSyst.EtatSrv.ScrutSvte = 0, _
-                                  "** Inconnue **", _
-                                  Format$(dtuEtatSyst.EtatSrv.ScrutSvte, "dd/mm/yyyy hh:nn:ss"))
+                                  Traduit("etat_inconnu", "** Inconnue **"), _
+                                  Format$(dtuEtatSyst.EtatSrv.ScrutSvte, Traduit("etat_fmtdate", "dd/mm/yyyy hh:nn:ss")))
 
     Me.cmdAPropos.SetFocus
     ' Bouton 'Envoie maintenant'
@@ -438,6 +445,8 @@ Private Sub cmdJournal_Click()
 End Sub
 
 Private Sub Form_Load()
+    Call Me.ChangeLang
+
     Me.Caption = "libMAIL - version " & VersionProg()
     Me.lblProgBarEchelle.Width = 0
 

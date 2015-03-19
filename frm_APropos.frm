@@ -1,6 +1,6 @@
 Version = 17
 VersionRequired = 17
-Checksum = -1667620736
+Checksum = -1158701303
 Begin Form
     PopUp = NotDefault
     RecordSelectors = NotDefault
@@ -16,10 +16,10 @@ Begin Form
     Width = 4485
     DatasheetFontHeight = 9
     ItemSuffix = 16
-    Left = 1995
-    Top = 2355
-    Right = 6495
-    Bottom = 7305
+    Left = 2400
+    Top = 1950
+    Right = 7365
+    Bottom = 8100
     DatasheetGridlinesColor = 12632256
     RecSrcDt = Begin
         0x2a06706af574e340
@@ -91,7 +91,7 @@ Begin Form
                     Width = 4485
                     Height = 219
                     FontWeight = 700
-                    Name ="Étiquette4"
+                    Name ="lblTexte1"
                     Caption ="EMETTEUR SMTP minimal"
                     FontName ="Arial"
                 End
@@ -102,7 +102,7 @@ Begin Form
                     Top = 623
                     Width = 4485
                     Height = 279
-                    Name ="Étiquette6"
+                    Name ="lblTexte2"
                     Caption ="bibliothèque pour MS-Access® 97 et suivants."
                     FontName ="Arial"
                 End
@@ -132,8 +132,8 @@ Begin Form
                     Height = 228
                     ForeColor = 1279872587
                     Name ="lblMAIL"
-                    Caption ="Contact : denis.scheidt@free.fr"
-                    HyperlinkAddress ="mailto:denis.scheidt@free.fr?subject=[libMAIL]"
+                    Caption ="Contact : access.libmail@gmail.com"
+                    HyperlinkAddress ="mailto:access.libmail@gmail.com?subject=[libMAIL]"
                 End
                 Begin Image
                     BackStyle = 1
@@ -584,7 +584,7 @@ CodeBehindForm
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2013 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -603,28 +603,43 @@ Option Explicit
 '    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Private Sub cmdOK_Click()
-    DoCmd.Close acForm, Me.Name, acSaveNo
-End Sub
 
-Private Sub Form_Load()
+
+' Procédure de traduction de l'interface.
+Public Sub ChangeLang()
     Dim s As String, bVersTbl As Byte
+    Static T9N_org() As String
 
-    Me.cmdOK.SetFocus
-    Me.txtLicence = "Ce programme est un logiciel libre ; vous pouvez le redistribuer et/ou le modifier en respectant les termes de la Licence GNU LGPL (Lesser General Public License) comme publiée par la Free Software Fondation ; soit dans la version 3 de la licence, soit (selon votre goût) une version ultérieure. Ce programme est distribué dans l'espoir de vous être utile, mais SANS AUCUNE GARANTIE ; ni même de garanties implicites. Lisez la GNU LGPL pour plus de détails. Vous devez avoir reçu une copy de la GNU Lesser Public License avec ce programme ; si ce n'est pas le cas, écrivez à la Free Software Fondation, Inc., 51 Franklin St, Fifth Florr, Boston, MA 02110-1301 USA"
+    Me.txtLicence = Traduit("frmab_txtLic", _
+                            "Ce programme est un logiciel libre ; vous pouvez le redistribuer et/ou le modifier en respectant les termes de la Licence GNU LGPL (Lesser General Public License) comme publiée par la Free Software Fondation ; soit dans la version 3 de la licence, soit (selon votre goût) une version ultérieure.\nCe programme est distribué dans l'espoir de vous être utile, mais SANS AUCUNE GARANTIE ; ni même de garanties implicites.\nLisez la GNU LGPL pour plus de détails. Vous devez avoir reçu une copy de la GNU Lesser Public License avec ce programme ; si ce n'est pas le cas, écrivez à la\nFree Software Fondation, Inc.\n51 Franklin St, Fifth Floor\nBoston, MA 02110-1301 USA")
+    Me.txtContrib = Traduit("frmab_txtContr", "Hervé Inisan : Tests, débogage et corrections")
 
-    Me.txtContrib = "Hervé Inisan : Tests, débogage et corrections"
+
+    Call LangueCtls(Me.Form, T9N_org())
 
     ' Version de la table
     On Error Resume Next
     bVersTbl = CurrentDb.TableDefs(TableMail()).Properties!VersTbl
     On Error GoTo 0
 
-    s = "mailto:denis.scheidt@free.fr?subject=[libMAIL " & VersionProg() & "]" & _
-        "&body=%0d%0aConfiguration de mon poste:%0d%0a" & _
-        "%09Version de la table " & TableMail() & " : " & bVersTbl & "%0d%0a" & _
-        "%09Version d'Access%09: " & VersionXS() & "%0d%0a" & _
-        "%09Version de Windows%09: " & VersionWin() & "%0d%0a" & _
-        "%09Plateforme%09: " & Plateforme() & "%0d%0a"
+    s = "mailto:access.libmail@gmail.com?subject=[libMAIL " & VersionProg() & "]" & _
+        "&body=%0d%0a" & Traduit("apropos_mailbody1", "Configuration de mon poste") & ":%0d%0a" & _
+        "%09" & Traduit("apropos_mailbody2", "Version de la table %s : %s", TableMail(), bVersTbl) & "%0d%0a" & _
+        "%09" & Traduit("apropos_mailbody3", "Version d'Access") & "%09: " & VersionXS() & "%0d%0a" & _
+        "%09" & Traduit("apropos_mailbody4", "Version de Windows") & "%09: " & VersionWin() & "%0d%0a" & _
+        "%09" & Traduit("arropos_mailbody5", "Plateforme") & "%09: " & Plateforme() & "%0d%0a"
     Me.lblMAIL.HyperlinkAddress = s
+End Sub
+
+
+
+
+Private Sub cmdOK_Click()
+    DoCmd.Close acForm, Me.Name, acSaveNo
+End Sub
+
+Private Sub Form_Load()
+    Call Me.ChangeLang
+
+    Me.cmdOK.SetFocus
 End Sub

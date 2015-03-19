@@ -1,7 +1,7 @@
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2012 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -233,13 +233,13 @@ Sub SMTPFormJnl()
 End Sub
 
 ' Retourne les informations renvoyées par la commande EHLO
-Function SMTPTest(ByVal sNomSrv As String)
+Function SMTPTest(ByVal sNomSrv As String) As String
     Dim lRet As Long, lPort As Long, lSock As Long, sRepSrv As String, i As Integer, iDelai As Integer, oEtat As Byte
 
     ' La fonction ne peut être appelée que si...
     With dtuEtatSyst.EtatSrv
         If .Etat <> lmlSrvAttente And .Etat <> lmlSrvDecharge And .Etat <> lmlSrvSuspendu Then
-            SMTPTest = "L'état actuel du serveur ne permet pas l'exécution de cette commande..."
+            SMTPTest = Traduit("tst_unavail", "L'état actuel du serveur ne permet pas l'exécution de cette commande...")
             Exit Function
         End If
     End With
@@ -255,7 +255,7 @@ Function SMTPTest(ByVal sNomSrv As String)
 
     Call ServPort(sNomSrv, lPort)                                   ' Extraire Serveur et Port.
 
-    SMTPTest = "Connexion à " & sNomSrv & " sur le port " & lPort & vbCrLf
+    SMTPTest = Traduit("tst_connect", "Connexion à %s sur le port %s\n", sNomSrv, lPort)
     lRet = CnxServ(sNomSrv, lPort, lSock)
     If lRet = 0 Then                                                ' Connexion OK.
         i = EnvoiCMD(lSock, Null, , , sRepSrv)
@@ -269,13 +269,13 @@ Function SMTPTest(ByVal sNomSrv As String)
                 i = EnvoiCMD(lSock, "QUIT", , , sRepSrv)
                 SMTPTest = SMTPTest & "--> QUIT" & vbCrLf & sRepSrv & vbCrLf
             Else
-                SMTPTest = SMTPTest & i & " Le serveur rejette la commande EHLO... " & vbCrLf & sRepSrv
+                SMTPTest = SMTPTest & i & Traduit("tst_errehlo", " Le serveur rejette la commande EHLO... \n") & sRepSrv
             End If
         Else
-            SMTPTest = SMTPTest & i & " Le serveur refuse la connexion... " & vbCrLf & sRepSrv
+            SMTPTest = SMTPTest & i & Traduit("tst_cnxrefuse", " Le serveur refuse la connexion... \n") & sRepSrv
         End If
     Else
-        SMTPTest = SMTPTest & "Impossible d'établir la connexion..." & vbCrLf & "Erreur " & lRet & ", socket " & lSock
+        SMTPTest = SMTPTest & Traduit("tst_cnxerror", "Impossible d'établir la connexion...\nErreur %s, socket %s", lRet, lSock)
     End If
 
     Call CnxFin(lSock)

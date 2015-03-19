@@ -1,6 +1,6 @@
 Version = 17
 VersionRequired = 17
-Checksum = -257873319
+Checksum = 1334397974
 Begin Form
     RecordSelectors = NotDefault
     NavigationButtons = NotDefault
@@ -12,9 +12,9 @@ Begin Form
     Width = 2279
     DatasheetFontHeight = 10
     ItemSuffix = 12
-    Left = 1230
+    Left = 1635
     Top = 285
-    Right = 9165
+    Right = 9570
     Bottom = 4530
     DatasheetGridlinesColor = 12632256
     RecSrcDt = Begin
@@ -391,7 +391,7 @@ Begin Form
                     Height = 283
                     FontSize = 10
                     FontWeight = 700
-                    Name ="Étiquette3"
+                    Name ="lblDossiers"
                     Caption ="Dossiers"
                     FontName ="Arial"
                 End
@@ -456,7 +456,7 @@ Begin Form
                     Height = 283
                     FontSize = 10
                     FontWeight = 700
-                    Name ="Libelle"
+                    Name ="txtLibelle"
                     ControlSource ="Libelle"
                     FontName ="Arial"
                 End
@@ -501,7 +501,7 @@ CodeBehindForm
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2012 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -521,6 +521,16 @@ Option Explicit
 
 
 
+
+
+' Procédure de traduction de l'interface.
+Public Sub ChangeLang()
+    Static T9N_org() As String
+
+    Call LangueCtls(Me.Form, T9N_org())
+
+End Sub
+
 Private Sub Form_Current()
     If Me.RecordsetClone.RecordCount > 0 Then   ' Si la table BoiteMail n'est pas vide...
         Me.txtSEL = Me.txtEtat                  ' Identifiant courant dans le champ de sélection.
@@ -530,6 +540,9 @@ End Sub
 Private Sub Form_Load()
     Dim sTable As String, s As String
 
+    Call Me.ChangeLang
+
+
     sTable = TableMail() & " IN '" & CurrentDb.Name & "'"
 
     ' Le nom de la table étant variable, il n'est pas possible de définir la source du formulaire en mode création.
@@ -538,19 +551,19 @@ Private Sub Form_Load()
     ' Le pilote ODBC ajoute des parenthèses dans la suite de requêtes UNION, et provoque une erreur de syntaxe car Access
     ' tente d'envoyer la requête au serveur à l'aide de SQLExecDirect.
     ' L'insertion dans la requête d'une fonction propre à VBA oblige Access à effectuer l'UNION localement.
-    s = "SELECT 10 As Tri, 'E' As Etat, 'Boite d''envoi' As Libelle, Count('Etat') As NbMsg, Max(Nz(Identifiant,0)) As BUG" & vbCrLf & _
+    s = "SELECT 10 As Tri, 'E' As Etat, Traduit('gbm_E','Boite d''envoi') As Libelle, Count('Etat') As NbMsg, Max(Nz(Identifiant,0)) As BUG" & vbCrLf & _
         "FROM " & sTable & vbCrLf & _
         "WHERE Etat='E'" & vbCrLf & _
         "UNION" & vbCrLf & _
-        "SELECT 20, 'V', 'Eléments envoyés', Count('Etat'), 0" & vbCrLf & _
+        "SELECT 20, 'V', Traduit('gbm_V', 'Eléments envoyés'), Count('Etat'), 0" & vbCrLf & _
         "FROM " & sTable & vbCrLf & _
         "WHERE Etat='V'" & vbCrLf & _
         "UNION" & vbCrLf & _
-        "SELECT 30, 'X', 'Erreurs', Count('Etat'), 0" & vbCrLf & _
+        "SELECT 30, 'X', Traduit('gbm_X', 'Erreurs'), Count('Etat'), 0" & vbCrLf & _
         "FROM " & sTable & vbCrLf & _
         "WHERE Etat='X'" & vbCrLf & _
         "UNION" & vbCrLf & _
-        "SELECT 100, 'D', 'Corbeille', Count('Etat'), 0" & vbCrLf & _
+        "SELECT 100, 'D', Traduit('gbm_D', 'Corbeille'), Count('Etat'), 0" & vbCrLf & _
         "FROM " & sTable & vbCrLf & _
         "WHERE Etat='D'" & vbCrLf & _
         "ORDER BY Tri;"

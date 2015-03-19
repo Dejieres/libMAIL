@@ -1,9 +1,8 @@
-Attribute VB_Name = "Outils"
 Option Compare Database
 Option Explicit
 Option Private Module
 
-' Copyright 2009-2012 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -29,13 +28,17 @@ Sub ChargeVB()
     ' Etablit avant tout les références nécessaires au fonctionnement correct de la bibliothèque
 
     ' GUID pour DAO3x0.DLL  : {00025E01-0000-0000-C000-000000000046}
-	' Pas nécessaire à partir d'Access 2007 (=ACEDAO.dll)
+    ' Pas nécessaire à partir d'Access 2007 (=ACEDAO.dll)
      If Val(SysCmd(acSysCmdAccessVer)) < 12 Then Call CtrlRefs("{00025E01-0000-0000-C000-000000000046}")
     ' GUID pour MSO(97).DLL : {2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}
     Call CtrlRefs("{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}")
 
     ' Charge tout le code source depuis le répertoire du fichier .MDB
     Call ChargeVBX
+
+    ' Crée la table des traductions.
+    Call CreeT9N
+
 End Sub
 
 Sub SauveVB(Optional bTout As Boolean = False)
@@ -75,6 +78,7 @@ Sub SauveVB(Optional bTout As Boolean = False)
     End Select
 
 End Sub
+
 
 
 
@@ -299,4 +303,27 @@ Private Sub SauveDocs(lType As Long, sRepert As String, bTout As Boolean, bRAZ A
 
     db.Close
     Set db = Nothing
+End Sub
+
+' Création de la table de traductions.
+Private Sub CreeT9N()
+    Dim db As DAO.Database, td As DAO.TableDef
+
+    Set db = CurrentDb
+
+    On Error Resume Next
+    Set td = db.TableDefs("T9N")
+    On Error GoTo 0
+
+    If Not td Is Nothing Then db.Execute "DROP TABLE T9N"               ' On supprime la table.
+
+    ' Créer la table.
+    db.Execute "CREATE TABLE T9N (IDLang LONG, CleMsg TEXT(50), MsgT9N LONGTEXT, CONSTRAINT PrimaryKey PRIMARY KEY (IDLang, CleMsg))"
+
+    ' Chargement des langues.
+    ' -----------------------
+    ' L'appel doit se faire ici car le module contenant cette procédure n'est pas encore chargé lors de l'appel à ChargeVB,
+    ' ce qui provoque une erreur de compilation. Déplacer l'appel ici évite cette erreur (à condition que la compilation à la demande soit activée).
+    Call ChargeT9N
+
 End Sub

@@ -1,6 +1,6 @@
 Version = 17
 VersionRequired = 17
-Checksum = 1910030936
+Checksum = 1276056039
 Begin Form
     NavigationButtons = NotDefault
     DividingLines = NotDefault
@@ -12,10 +12,10 @@ Begin Form
     Width = 8511
     DatasheetFontHeight = 10
     ItemSuffix = 21
-    Left = 150
-    Top = 1410
-    Right = 10305
-    Bottom = 8790
+    Left = 1170
+    Top = 2400
+    Right = 11325
+    Bottom = 9780
     DatasheetGridlinesColor = 12632256
     AfterDelConfirm ="[Event Procedure]"
     RecSrcDt = Begin
@@ -393,7 +393,7 @@ Begin Form
                     Height = 283
                     FontSize = 10
                     FontWeight = 700
-                    Name ="Étiquette3"
+                    Name ="lblTitre"
                     Caption ="Messages"
                     FontName ="Arial"
                 End
@@ -405,7 +405,7 @@ Begin Form
                     Top = 283
                     Width = 1531
                     Height = 227
-                    Name ="Étiquette15"
+                    Name ="lblDate"
                     Caption ="Date"
                     FontName ="Arial"
                 End
@@ -417,7 +417,7 @@ Begin Form
                     Top = 283
                     Width = 3333
                     Height = 227
-                    Name ="Étiquette16"
+                    Name ="lblDest"
                     Caption ="Destinataires"
                     FontName ="Arial"
                 End
@@ -429,7 +429,7 @@ Begin Form
                     Top = 283
                     Width = 3398
                     Height = 227
-                    Name ="Étiquette17"
+                    Name ="lblObjet"
                     Caption ="Objet"
                     FontName ="Arial"
                 End
@@ -576,7 +576,7 @@ CodeBehindForm
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2013 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -595,6 +595,8 @@ Option Explicit
 '    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+
+
 ' Variables permettant de mémoriser les sélections dans les sous-formulaire
 ' SelHeight est perdue dès que le sous-formulaire perd le focus.
 ' On mémorise la valeur lors du MouseUp du formulaire
@@ -603,10 +605,19 @@ Private lSelHeight  As Long
 Property Get pSelHeight() As Long
     pSelHeight = IIf(lSelHeight = 0, 1, lSelHeight)
 End Property
+
 Property Let pSelHeight(lSelH As Long)
     Me.SelHeight = lSelH
 End Property
 
+
+' Procédure de traduction de l'interface.
+Public Sub ChangeLang()
+    Static T9N_org() As String
+
+    Call LangueCtls(Me.Form, T9N_org())
+
+End Sub
 
 
 ' *******************************************************************************************************************
@@ -616,16 +627,16 @@ Public Sub myResize()
 
     Me.Painting = False
 
-    l = Me.InsideWidth - Me.Étiquette17.Left - 300
+    l = Me.InsideWidth - Me.lblObjet.Left - 300
     If l < 0 Then l = 0
-    Me.Étiquette17.Width = l
+    Me.lblObjet.Width = l
     Me.txtObjet.Width = l
 
     l = Me.InsideWidth - 300
     If l < 0 Then l = 0
     Me.txtApercu.Width = IIf(l - Me.txtApercu.Left < 0, 0, l - Me.txtApercu.Left)
     Me.txtFond.Width = l
-    Me.Étiquette3.Width = l
+    Me.lblTitre.Width = l
     Me.Width = l
 
     Me.Painting = True
@@ -667,7 +678,7 @@ Private Sub Form_Current()
 End Sub
 
 Private Sub Form_Load()
-     Dim SQL As String
+    Dim SQL As String
 
     ' Appeler les fonction à partir du formulaire plombe les temps de réponse. Il vaut mieux déplacer ce traitement dans la requête.
     '
@@ -678,6 +689,8 @@ Private Sub Form_Load()
           "FROM " & TableMail() & " IN '" & CurrentDb.Name & "';"
     ' Le nom de la table étant variable, il n'est pas possible de définir la source du formulaire en mode création.
     Me.RecordSource = SQL
+
+    Call Me.ChangeLang
 End Sub
 
 Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)

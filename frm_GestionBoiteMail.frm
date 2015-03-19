@@ -1,6 +1,6 @@
 Version = 17
 VersionRequired = 17
-Checksum = -285881070
+Checksum = 97600285
 Begin Form
     RecordSelectors = NotDefault
     AutoCenter = NotDefault
@@ -14,10 +14,10 @@ Begin Form
     Width = 11055
     DatasheetFontHeight = 10
     ItemSuffix = 23
-    Left = 1920
-    Top = 408
-    Right = 12732
-    Bottom = 6684
+    Left = 12840
+    Top = 720
+    Right = 23655
+    Bottom = 6990
     DatasheetGridlinesColor = 12632256
     RecSrcDt = Begin
         0x2f4978e58d8fe340
@@ -126,7 +126,7 @@ Begin Form
                     FontSize = 12
                     FontWeight = 700
                     Name ="Texte9"
-                    ControlSource ="=\"Gestionnaire de la table \" & TableMail() & \".\""
+                    ControlSource ="=Traduit(\"gbm_titre\",\"Gestionnaire de la table %s\",TableMail())"
                     FontName ="Arial"
                 End
                 Begin CommandButton
@@ -243,7 +243,7 @@ Begin Form
                     Width = 397
                     Height = 396
                     TabIndex = 5
-                    Name ="cmdVideCorbeillle"
+                    Name ="cmdVideCorbeille"
                     Caption ="Commande3"
                     OnClick ="[Event Procedure]"
                     PictureData = Begin
@@ -406,7 +406,7 @@ Option Compare Database
 Option Explicit
 
 
-' Copyright 2009-2012 Denis SCHEIDT
+' Copyright 2009-2014 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -425,10 +425,42 @@ Option Explicit
 '    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+
+
 ' Couleurs vive/atténuée pour le curseur des sous-formulaires.
 Private Const coulNormale   As Long = vbGrayText 'vbInactiveTitleBar
 Private Const coulSelect    As Long = vbHighlight ' vbActiveTitleBar
 Private Const coulTexte     As Long = vbButtonText 'vbHighlightText
+
+
+' Procédure de traduction de l'interface.
+Public Sub ChangeLang()
+    Static T9N_org() As String, i As Integer
+
+    Me.lstDeplaceMSG.RowSource = "E;" & Traduit("gbm_E", "Boîte d'envoi") & _
+                                 ";V;" & Traduit("gbm_V", "Eléments envoyés") & _
+                                 ";X;" & Traduit("gbm_X", "Erreurs") & _
+                                 ";D;" & Traduit("gbm_D", "Corbeille")
+
+    i = -1
+    On Error Resume Next
+    i = UBound(T9N_org, 1)
+    On Error GoTo 0
+    If i <> -1 Then
+        ' Les sous-formulaires ne sont pas accessibles par la collectin Forms.
+        ' Il faut les rafraîchir manuellement en cas de changement de langue.
+        Me.sf_GestionBM_Dossiers.Requery
+        Call Me.sf_GestionBM_Dossiers.Form.ChangeLang
+        Me.sf_GestionBM_Msg.Form.Requery
+        Call Me.sf_GestionBM_Msg.Form.ChangeLang
+    End If
+
+    Call LangueCtls(Me.Form, T9N_org())
+
+    Me.Texte9.Requery
+
+End Sub
+
 
 
 ' Actualise les sous-formulaires
@@ -529,12 +561,12 @@ End Function
 ' Vérifications avant traitement.
 Private Function TrtPossible() As Boolean
     If Me.sf_GestionBM_Msg.Form.pSelHeight = 0 Then
-        MsgBox "La sélection ne comporte aucune ligne.", vbInformation, "libMAIL"
+        MsgBox Traduit("gbm_nosel", "La sélection ne comporte aucune ligne."), vbInformation, "libMAIL"
         Exit Function
     End If
 
     If SMTPEtatSrv.Etat = lmlSrvEnCours And Me.txtEtat = "E" Then
-        MsgBox "Cette action n'est pas possible pendant que le serveur traite les messages de la boite d'envoi.", vbCritical, "libMAIL"
+        MsgBox Traduit("gbm_impossible", "Cette action n'est pas possible pendant que le serveur traite les messages de la boite d'envoi."), vbCritical, "libMAIL"
         Exit Function
     End If
 
@@ -557,12 +589,12 @@ Private Sub cmdExport_Click()
     On Error GoTo 0
 
     If Len(sID) = 0 Then
-        MsgBox "Vous devez sélectionner un message à exporter.", vbInformation
+        MsgBox Traduit("gbm_noseleml", "Vous devez sélectionner un message à exporter."), vbInformation
         Exit Sub
     End If
 
-    sFiltre = "Fichiers eml" & vbNullChar & "*.eml" & vbNullChar & _
-              "Tous les fichiers" & vbNullChar & "*.*"
+    sFiltre = Traduit("gbm_emlfilter01", "Fichiers eml") & vbNullChar & "*.eml" & vbNullChar & _
+              Traduit("gbm_emlfiltre02", "Tous les fichiers") & vbNullChar & "*.*"
 
     With dtuOFN
         .lStructSize = Len(dtuOFN)
@@ -574,7 +606,7 @@ Private Sub cmdExport_Click()
         .sFileTitle = vbNullChar & Space$(512)
         .lMaxFileTitle = Len(.sFileTitle)
 '        .sInitialDir = "c:\temp" & vbNullChar & Space$(512) & vbNullChar & vbNullChar
-        .sDialogTitle = "Exporter le message '" & sID & "'."
+        .sDialogTitle = Traduit("gbm_emlexport", "Exporter le message '%s'.", sID)
         .lFlags = OFN_ENABLESIZING Or OFN_PATHMUSTEXIST Or OFN_EXPLORER Or OFN_OVERWRITEPROMPT
         .sDefFileExt = "*.eml"
     End With
@@ -585,9 +617,9 @@ Private Sub cmdExport_Click()
     l = ExporteEML(sID, dtuOFN.sFile)
 
     If l = 0 Then
-        MsgBox "Le message a été enregistré dans " & dtuOFN.sFile & ".", vbInformation
+        MsgBox Traduit("gbm_emlexpsucces", "Le message a été enregistré dans %s.", dtuOFN.sFile), vbInformation
     Else
-        MsgBox "Erreur " & l & ", " & Error$(l) & " lors de l'enregistrement du message dans le fichier " & dtuOFN.sFile
+        MsgBox Traduit("gbm_emlexporterreur", "Erreur %s, %s lors de l'enregistrement du message dans le fichier %s.", l, Error$(l), dtuOFN.sFile)
     End If
 End Sub
 
@@ -608,9 +640,13 @@ Private Sub cmdNouveauMSG_Click()
 End Sub
 
 Private Sub cmdSupprSEL_Click()
+    Dim s As String
+
     If Not TrtPossible() Then Exit Sub
 
-    If MsgBox("Etes-vous sûr(e) de vouloir " & IIf(Me.txtEtat = "D", "supprimer", "envoyer vers la corbeille") & " le(s) message(s) sélectionné(s) ?", _
+    If Me.txtEtat = "D" Then s = Traduit("gbm_supprdel", "supprimer") Else s = Traduit("gbm_supprtrash", "envoyer vers la corbeille")
+
+    If MsgBox(Traduit("gbm_supprconfirm", "Etes-vous sûr(e) de vouloir %s le(s) message(s) sélectionné(s) ?", s), _
               vbYesNo + vbQuestion + vbDefaultButton2, "libMAIL") = vbYes Then
         If Me.txtEtat = "D" Then
             ' Suppression depuis la corbeille
@@ -625,7 +661,7 @@ Private Sub cmdSupprSEL_Click()
 End Sub
 
 Private Sub cmdVideCorbeillle_Click()
-    If MsgBox("Etes-vous sûr(e) de vouloir vider la corbeille ?", _
+    If MsgBox(Traduit("gbm_videconfirm", "Etes-vous sûr(e) de vouloir vider la corbeille ?"), _
               vbYesNo + vbQuestion + vbDefaultButton2, "libMAIL") = vbYes Then
         CurrentDb.Execute "DELETE * FROM " & TableMail() & " WHERE Etat='D'"
 
@@ -634,9 +670,11 @@ Private Sub cmdVideCorbeillle_Click()
 End Sub
 
 Private Sub Form_Load()
+    Call Me.ChangeLang
+
     With Me.sf_GestionBM_Dossiers.Form
         .txtFond.ForeColor = coulNormale
-        .Libelle.ForeColor = coulTexte
+        .txtLibelle.ForeColor = coulTexte
     End With
     With Me.sf_GestionBM_Msg.Form
         .txtFond.ForeColor = coulNormale
@@ -677,12 +715,11 @@ Private Sub lstDeplaceMSG_AfterUpdate()
     If Not TrtPossible() Then Exit Sub
 
     If Me.lstDeplaceMSG.Column(0) = Me.txtEtat Then
-        MsgBox "Les dossiers source et destination sont identiques !", vbCritical, "libMAIL"
+        MsgBox Traduit("gbm_deplaceidem", "Les dossiers source et destination sont identiques !"), vbCritical, "libMAIL"
         Exit Sub
     End If
 
-    If MsgBox("Etes-vous sûr(e) de vouloir déplacer le(s) message(s) sélectionné(s) de '" & _
-              Me.sf_GestionBM_Dossiers.Form.Libelle & "' vers '" & Me.lstDeplaceMSG & "' ?", _
+    If MsgBox(Traduit("gbm_deplaceconfirm", "Etes-vous sûr(e) de vouloir déplacer le(s) message(s) sélectionné(s) de '%s' vers '%s' ?", Me.sf_GestionBM_Dossiers.Form.Libelle, Me.lstDeplaceMSG), _
               vbYesNo + vbQuestion + vbDefaultButton2, "libMAIL") = vbYes Then
         CurrentDb.Execute "UPDATE " & TableMail() & " SET Etat='" & Me.lstDeplaceMSG.Column(0) & "' WHERE Identifiant In (" & IxMsg() & ")"
     End If

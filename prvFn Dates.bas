@@ -80,15 +80,17 @@ Function FormatDH(iDecalage As Integer) As String
 End Function
 
 ' Retourne la date et l'heure système, à la milliseconde.
-Function HoroDatage() As String
-    Dim dtuST As SYSTEMTIME
+Function HoroDatage(Optional bTimeStamp As Boolean = False) As String
+    Dim dtuST As SYSTEMTIME, sFmt As String
 
     Call GetSystemTime(dtuST)
 
+    If bTimeStamp Then sFmt = "yyyymmddhhnnss" Else sFmt = "General Date"
+
     With dtuST
         ' Heure système (UTC) ajustée en fonction du fuseau horaire.
-        HoroDatage = DateAdd("n", DecalageUTC(), DateSerial(.wYear, .wMonth, .wDay) & " " & _
-                                                 TimeSerial(.wHour, .wMinute, .wSecond)) & "." & _
+        ' Générer une chaine d'horodatage respectant les options régionales.
+        HoroDatage = Format$(DateAdd("n", DecalageUTC(), DateSerial(.wYear, .wMonth, .wDay) + TimeSerial(.wHour, .wMinute, .wSecond)), sFmt) & "." & _
                      Format$(.wMillisecond, "000")
     End With
 End Function
