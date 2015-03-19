@@ -2,7 +2,7 @@ Option Compare Database
 Option Explicit
 Option Private Module
 
-' Copyright 2009-2014 Denis SCHEIDT
+' Copyright 2009-2015 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -130,20 +130,30 @@ End Function
 
 ' Contrôle l'existence de la référence et tente de l'ajouter si elle n'existe pas.
 Private Sub CtrlRefs(sGUID As String)
-    Dim Ref As Access.Reference
+    Dim Ref As Access.Reference, s As String
 
     On Error Resume Next
 
     Set Ref = Application.References.AddFromGuid(sGUID, 0, 0)
     Select Case Err.Number
         Case 0                                  ' Référence ajoutée correctement
-            MsgBox "Référence ajoutée pour " & Ref.Name & " (" & Ref.FullPath & ")", vbInformation
+            If GetUserDefaultLangID Mod 1023 = 13 Then
+                s = "Référence ajoutée pour " & Ref.Name & " (" & Ref.FullPath & ")"
+            Else
+                s = "Reference added for " & Ref.Name & " (" & Ref.FullPath & ")"
+            End If
+            MsgBox s, vbInformation
 
         Case 32813                              ' La référence existe déjà
             ' Rien
 
         Case Else
-            MsgBox "Erreur " & Err.Number & "- " & Err.Description & " lors de l'ajout de la référence " & sGUID, vbCritical
+            If GetUserDefaultLangID Mod 1023 = 13 Then
+                s = "Erreur " & Err.Number & "- " & Err.Description & " lors de l'ajout de la référence " & sGUID
+            Else
+                s = "Error " & Err.Number & "- " & Err.Description & " while adding reference " & sGUID
+            End If
+            MsgBox s, vbCritical
 
     End Select
 
@@ -166,14 +176,25 @@ Private Sub ChargeVBX()
         End If
     Next Doc
     If i = 0 Then
-        MsgBox "Vous devez enregistrer le module 'Outils' avant de lancer la procédure ChargeVB.", vbCritical
+        If GetUserDefaultLangID Mod 1023 = 13 Then
+            s = "Vous devez enregistrer le module 'Outils' avant de lancer la procédure ChargeVB."
+        Else
+            s = "You must save the module 'Outils' before running ChargeVB."
+        End If
+        MsgBox s, vbCritical
         Exit Sub
     End If
 
-    If MsgBox("Chargement des formulaires et des modules dans la base." _
+    If GetUserDefaultLangID Mod 1023 = 13 Then
+        s = "Chargement des formulaires et des modules dans la base." _
               & vbCrLf & vbCrLf & "ATTENTION, cette commande va effacer *TOUS* les formulaires et modules avant d'importer les nouvelles versions." _
-              & vbCrLf & vbCrLf & "Etes-vous sûr(e) de vouloir faire ça ?", _
-              vbYesNo + vbQuestion + vbDefaultButton2) = vbNo Then Exit Sub
+              & vbCrLf & vbCrLf & "Etes-vous sûr(e) de vouloir faire ça ?"
+    Else
+        s = "Loading all forms and modules from disk." _
+              & vbCrLf & vbCrLf & "CAUTION, *ALL* existing forms and modules will be DELETED from this database before importing." _
+              & vbCrLf & vbCrLf & "Are you sure ?"
+    End If
+    If MsgBox(s, vbYesNo + vbQuestion + vbDefaultButton2) = vbNo Then Exit Sub
 
     ' Effacer tous les formulaires et les modules, SAUF celui-ci !
     For Each Doc In db.Containers!Forms.Documents
@@ -220,9 +241,17 @@ Private Sub ChargeVBX()
     Call AjouteProp("Modules")                  ' Modules
     Call AjouteProp("Forms")                    ' Formulaires
 
-    s = nbForms & " formulaire(s) et " & nbMods & " module(s) importé(s) et compilé(s)." & vbCrLf & vbCrLf
-    s = s & "La bibliothèque libMAIL est fournie SANS AUCUNE GARANTIE." & vbCrLf
-    s = s & "Ce programme est distribué sous licence LGPL v3 ou supérieure. Vous pouvez le modifier/redistribuer conformément aux termes de cette licence." & vbCrLf
+    If GetUserDefaultLangID Mod 1023 = 13 Then
+        s = nbForms & " formulaire(s) et " & nbMods & " module(s) importé(s) et compilé(s)." & vbCrLf & vbCrLf
+        s = s & "La bibliothèque libMAIL est fournie SANS AUCUNE GARANTIE." & vbCrLf
+        s = s & "Ce programme est distribué sous licence LGPL v3 ou supérieure. Vous pouvez le modifier/redistribuer conformément aux termes de cette licence." & vbCrLf & vbCrLf
+        s = s & "Une copie de la licence est fournie dans le sous-dossier 'licence' de l'archive."
+    Else
+        s = nbForms & " form(s) and " & nbMods & " module(s) were loaded and compiled." & vbCrLf & vbCrLf
+        s = s & "This library comes WITHOUT ANY WARRANTY." & vbCrLf
+        s = s & "This programm is released under LGPL v3 (or higher) license. You can modify/redistribute it under the terms of that license." & vbCrLf & vbCrLf
+        s = s & "A copy of the license is available in the 'licence' subfolder of the archive file."
+    End If
     MsgBox s
 
     db.Close
@@ -239,7 +268,7 @@ Private Function NomSeul(sNomFichier As String) As String
     Do While Mid$(sNomFichier, i, 1) <> "."
         i = i - 1
         If i = 0 Then
-            i = Len(sNomFichier) + 1                ' Aucun point trouvé
+            i = Len(sNomFichier) + 1                                    ' Aucun point trouvé
             Exit Do
         End If
     Loop
