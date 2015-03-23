@@ -125,7 +125,7 @@ Function Remplacer(sExpression As String, sCherche As String, sRemplace As Strin
         nbMax = nbMax + 1&
         i = InStr(i + lCher, sExpression, sCherche, iCompare)
     Loop
-    sResult = Space$(lExpr - (lCher + lRemp) * nbMax)
+    sResult = Space$(lExpr - (lCher - lRemp) * nbMax)
 
     lPs = 1                                                         ' Position d'écriture
     lPe1 = lDebut                                                   ' Début de la lecture.
