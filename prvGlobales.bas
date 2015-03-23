@@ -2,7 +2,7 @@ Option Compare Database
 Option Explicit
 Option Private Module
 
-' Copyright 2009-2014 Denis SCHEIDT
+' Copyright 2009-2015 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -26,7 +26,7 @@ Option Private Module
 ' Ces constantes ne sont accessibles qu'à l'aide des fonctions définies plus bas.
 ' -------------------------------------------------------------------------------
 Private Const VersionProgramme  As String = "1.49"
-Private Const cCopyRight        As String = "Copyright 2009-2014 - Denis SCHEIDT"
+Private Const cCopyRight        As String = "Copyright 2009-2015 - Denis SCHEIDT"
 
 ' Si le nom de la table contient des espaces, pensez à le mettre [entre crochets].
 Private Const BoiteMail         As String = "BoiteMail"
