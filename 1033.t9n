@@ -96,6 +96,7 @@ APropos.txtContrib.Value	   =Hervé Inisan : Tests, debugging and corrections.
 APropos.pgContributions.Caption=Contributors
 APropos.pgLicence.Caption	   =License
 APropos.cmdOK.Caption		   =OK
+APropos.lblDon.Caption		   =libMAIL is free software.\nIf you wish to support its development, you can flash or click on this QR Code and make a donation to the project.
 apropos_mailbody1			   =Configuration of my PC
 apropos_mailbody2			   =Version of table %s : %s
 apropos_mailbody3			   =MS-Access version
