@@ -1,6 +1,6 @@
 Version = 17
 VersionRequired = 17
-Checksum = -168415151
+Checksum = 989344155
 Begin Form
     PopUp = NotDefault
     RecordSelectors = NotDefault
@@ -496,9 +496,10 @@ Begin Form
                     Top = 1530
                     Width = 2552
                     Height = 2552
-                    Name ="Image16"
+                    Name ="imgQRCodePaypal"
+                    OnClick ="[Event Procedure]"
                     PictureData = Begin
-                        0x0e000000a6044643010000006c00000000000000000000002b010000c3000000 ,
+                        0x0e00000087034659010000006c00000000000000000000002b010000c3000000 ,
                         0x0000000000000000881300008813000020454d46000001000826010011000000 ,
                         0x0100000000000000000000000000000080070000ac03000040010000f0000000 ,
                         0x00000000000000000000000000e2040080a90300460000009c9200008e920000 ,
@@ -2853,9 +2854,7 @@ Begin Form
                         0x14000000000000001000000014000000
                     End
                     Picture ="P:\\libMAIL\\Don_libMAIL.png"
-                    HyperlinkAddress ="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=K58N7GY75K4UN&lc=G"
-                        "B&item_name=Donation%20for%20libMAIL&no_note=0&cn=Your%20comment%20here.&no_ship"
-                        "ping=1&currency_code=EUR&bn=PP-DonationsBF:btn_donateCC_LG_global.gif:NonHosted"
+                    HyperlinkAddress ="##"
                 End
                 Begin Label
                     OverlapFlags = 85
@@ -3019,4 +3018,10 @@ Private Sub Form_Load()
     Call Me.ChangeLang
 
     Me.cmdOK.SetFocus
+End Sub
+
+Private Sub imgQRCodePaypal_Click()
+    ' Ce bouton est enregistré sur le compte.
+    ' Pas trouvé d'autre manière de faire fonctionner ce lien...
+    Shell "cmd /c start """" ""https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DRF6D9XGJBXR8"""
 End Sub
