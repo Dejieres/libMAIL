@@ -376,7 +376,7 @@ GestionBM_Msg.lblObjet.Caption=Subject
 
 ; Form frm_Journal
 ; ----------------
-Journal.Caption				 =Connexion log viewer
+Journal.Caption				 =Connection log viewer
 Journal.cmdActualiser.Caption=Refresh
 Journal.cmdEfface.Caption	 =Clear
 
