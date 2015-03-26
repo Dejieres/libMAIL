@@ -1,7 +1,7 @@
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2013 Denis SCHEIDT
+' Copyright 2009-2015 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -139,6 +139,7 @@ Public Const lmlMnuNMsg                 As Integer = 32     ' Option 'Nouveau me
 Public Const lmlMnuGest                 As Integer = 64     ' Option 'Gestionnaire...'
 Public Const lmlMnuEtat                 As Integer = 128    ' Option 'Afficher l'état'
 Public Const lmlMnuAJnl                 As Integer = 256    ' Option 'Afficher le journal'
+Public Const lmlMnuLang                 As Integer = 512    ' Option 'Langue'
 
 
 ' Constantes pour le type d'export des PJ

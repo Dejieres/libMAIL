@@ -2,7 +2,7 @@ Option Compare Database
 Option Explicit
 Option Private Module
 
-' Copyright 2014 Denis SCHEIDT
+' Copyright 2014-2015 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -140,13 +140,13 @@ Function Traduit(ByVal sCle As String, sMsgFR As String, ParamArray Params() As 
     ' Le journal n'est écrit qu'en anglais ou français.
     If sCle Like "¤*" Then
         sCle = Mid$(sCle, 2)                                                ' Supprimer le marqueur.
-        If lLang <> 1036 Then lLang = 1033                                  ' Forcer l'anglais US si pas Français.
+        If (lLang And 1023) <> 12 Then lLang = 1033                         ' Forcer l'anglais US si pas Français.
     End If
 
 
     Set rs = CodeDb.OpenRecordset("SELECT IDLang, CleMsg,MsgT9N FROM T9N WHERE CleMsg='" & sCle & "'", dbOpenDynaset, 0, dbReadOnly)
 
-    ' Traduire le message. Chercher d'abord le code lange complet.
+    ' Traduire le message. Chercher d'abord le code langue complet.
     rs.FindFirst "IDLAng=" & lLang
     If rs.NoMatch Then
         ' Si la recherche a échoué, chercher sur le code langue principal.
@@ -182,7 +182,7 @@ Sub LangueMenu()
                 Case lmlMnuGest:    .Caption = Traduit("mnu_mbm", "&Gestionnaire...")
                 Case lmlMnuEtat:    .Caption = Traduit("mnu_status", "&Afficher l'état")
                 Case lmlMnuAJnl:    .Caption = Traduit("mnu_log", "Afficher le &journal...")
-                Case -2:            .Caption = Traduit("mnu_langue", "&Langue")
+                Case lmlMnuLang:    .Caption = Traduit("mnu_langue", "&Langue")
                 Case -1:            .Caption = Traduit("mnu_about", "A &propos...")
             End Select
         End With

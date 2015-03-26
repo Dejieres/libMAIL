@@ -3,7 +3,7 @@ Option Explicit
 Option Private Module
 
 
-' Copyright 2009-2014 Denis SCHEIDT
+' Copyright 2009-2015 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -255,7 +255,7 @@ Sub CreeMenu()
     With cbc1
 '        .Caption = "&Langue"
         .BeginGroup = True
-        .Tag = -2
+        .Tag = lmlMnuLang
 
         ' Ajouter les autres langues.
         Set rs = CodeDb.OpenRecordset("SELECT DISTINCT IDLang FROM T9N", dbOpenDynaset, 0, dbReadOnly)

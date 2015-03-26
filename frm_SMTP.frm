@@ -502,7 +502,7 @@ CodeBehindForm
 Option Compare Database
 Option Explicit
 
-' Copyright 2009-2014 Denis SCHEIDT
+' Copyright 2009-2015 Denis SCHEIDT
 ' Ce programme est distribué sous Licence LGPL
 
 '    This file is part of libMAIL
@@ -1058,6 +1058,7 @@ Private Sub Détail_MouseMove(Button As Integer, Shift As Integer, x As Single, y
         Call MenuOnOff(lmlMnuGest, True)                            ' Gestionnaire
         Call MenuOnOff(lmlMnuEtat, True)                            ' Afficher l'état
         Call MenuOnOff(lmlMnuAJnl, True)                            ' Afficher le journal
+        Call MenuOnOff(lmlMnuLang, True)                            ' Changement de langue
 
         Call SetForegroundWindow(Me.hwnd)
         ' Si la bibliothèque est en MDE, et que la fenêtre de l'application hôte est réduite
